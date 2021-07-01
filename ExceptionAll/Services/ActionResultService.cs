@@ -63,7 +63,7 @@ namespace ExceptionAll.Services
             };
         }
 
-        public IActionResult GetResponse<T>(ActionContext context, int statusCode, string message = null) where T : ProblemDetails
+        public IActionResult GetResponse<T>(ActionContext context, string message = null) where T : ProblemDetails
         {            
             T details;
             if (!typeof(T).IsSubclassOf(typeof(ProblemDetails)) &&
@@ -77,7 +77,7 @@ namespace ExceptionAll.Services
             try
             {
                 var constructorInfo = ProblemDetailsHelper.GetActionContextConstructor<T>();
-                details = (T)constructorInfo.Invoke(new object[] { context, "Caught Exception", message ?? null, null });
+                details = (T)constructorInfo.Invoke(new object[] { context, "Caught Exception", message ?? null, null });                
             }
             catch (Exception e)
             {
@@ -85,11 +85,12 @@ namespace ExceptionAll.Services
                 throw new Exception($"Error when trying to invoke object constructor", e);
             }
 
+            new ProblemDetailsValidator<T>().ValidateAndThrow(details);
             context.HttpContext.Response.StatusCode = (int)details.Status;
             Logger.LogTrace(message ?? nameof(T).Replace("Details", "").Trim());
             return new ObjectResult(details)
             {
-                StatusCode = statusCode
+                StatusCode = details.Status
             };
         }
     }

@@ -36,7 +36,7 @@ namespace ExceptionAll.APIExample.Controllers
             var rng = new Random();
             if (id > 4)
             {
-                return _actionResultService.GetResponse<NotFoundDetails>(ControllerContext, 404, "The index is out of range");
+                return _actionResultService.GetResponse<NotFoundDetails>(ControllerContext, "The index is out of range");
             }
             var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

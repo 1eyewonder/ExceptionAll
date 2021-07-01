@@ -10,6 +10,6 @@ namespace ExceptionAll.Interfaces
 
         IActionResult GetErrorResponse(ExceptionContext context);
 
-        IActionResult GetResponse<T>(ActionContext context, int statusCode, string message = null) where T : ProblemDetails;
+        IActionResult GetResponse<T>(ActionContext context, string message = null) where T : ProblemDetails;
     }
 }
