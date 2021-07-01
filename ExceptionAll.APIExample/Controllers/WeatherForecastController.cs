@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using ExceptionAll.Details;
+using ExceptionAll.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,26 +20,32 @@ namespace ExceptionAll.APIExample.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IActionResultService _actionResultService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,
+            IActionResultService actionResultService)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _actionResultService = actionResultService ?? throw new ArgumentNullException(nameof(actionResultService));
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IActionResult> Get()
         {
             var rng = new Random();
 
             // if id is null
-            throw new ValidationException("Test");
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            //throw new ValidationException("Test");
+            return (ActionResult)_actionResultService.GetResponse<BadRequestDetails>(ControllerContext, 400, "Testing 123");
+            var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+
+            return Ok(result);
         }
     }
 }

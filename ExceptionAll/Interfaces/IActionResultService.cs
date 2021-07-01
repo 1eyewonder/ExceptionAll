@@ -8,12 +8,8 @@ namespace ExceptionAll.Interfaces
     {
         ILogger<IActionResultService> Logger { get; }
 
-        IActionResult GetBadRequestResponse(ActionContext context, string message = null);
-
         IActionResult GetErrorResponse(ExceptionContext context);
 
-        IActionResult GetNotFoundResponse(ActionContext context, string message = null);
-
-        IActionResult GetUnauthorizedResponse(ActionContext context, string message = null);
+        IActionResult GetResponse<T>(ActionContext context, int statusCode, string message = null) where T : ProblemDetails;
     }
 }

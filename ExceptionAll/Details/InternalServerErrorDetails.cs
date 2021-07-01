@@ -14,7 +14,7 @@ namespace ExceptionAll.Details
             Title = title;
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status500InternalServerError;
-            Detail = string.IsNullOrEmpty(message) == false ? message : "See Errors for more details";
+            Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
             ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
         }
 
@@ -23,7 +23,7 @@ namespace ExceptionAll.Details
             Title = title;
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status500InternalServerError;
-            Detail = string.IsNullOrEmpty(message) == false ? message : "See Errors for more details";
+            Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
             ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
         }
     }

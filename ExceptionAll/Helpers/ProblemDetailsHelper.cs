@@ -1,8 +1,10 @@
 ﻿using ExceptionAll.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ExceptionAll.Helpers
 {
@@ -70,6 +72,25 @@ namespace ExceptionAll.Helpers
 
             dictionary.Add("Errors", errorList);
             return dictionary;
+        }
+
+        public static ConstructorInfo GetActionContextConstructor<T>() 
+            where T : ProblemDetails
+        {
+            try
+            {
+                return typeof(T).GetConstructor(new Type[]
+                {
+                    typeof(ActionContext),
+                    typeof(string),
+                    typeof(string),
+                    typeof(List<ErrorDetail>)
+                });
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error creating constructor for type: {typeof(T)}", e);
+            }
         }
     }
 }
