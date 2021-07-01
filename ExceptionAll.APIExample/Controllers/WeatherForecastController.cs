@@ -30,12 +30,29 @@ namespace ExceptionAll.APIExample.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Route("api/Get/{id}")]
+        public async Task<IActionResult> Get(int id)
         {
             var rng = new Random();
+            if (id > 4)
+            {
+                return _actionResultService.GetResponse<NotFoundDetails>(ControllerContext, 404, "The index is out of range");
+            }
+            var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(index),
+                TemperatureC = rng.Next(-20, 55),
+                Summary = Summaries[rng.Next(Summaries.Length)]
+            })
+            .ToArray()[id];
 
-            throw new ValidationException("Test");
-            //return (ActionResult)_actionResultService.GetResponse<BadRequestDetails>(ControllerContext, 400, "Testing 123");
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var rng = new Random();
             var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),

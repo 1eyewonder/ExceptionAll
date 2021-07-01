@@ -9,6 +9,5 @@ namespace ExceptionAll.Dtos
         public Type DetailsType { get; set; }
         public Action<Exception> LogAction { get; set; } = null;
         public bool ExceptionVisibleToUser { get; set; } = false;
-        public int StatusCode { get; set; }
     }
 }

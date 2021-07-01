@@ -51,7 +51,6 @@ namespace ExceptionAll.APIExample
         {
             errorResponseService.AddErrorResponse(new ErrorResponse
             {
-                StatusCode = StatusCodes.Status400BadRequest,
                 ErrorTitle = "Bad Request - Data Annotations",
                 ExceptionType = typeof(System.ComponentModel.DataAnnotations.ValidationException),
                 DetailsType = typeof(BadRequestDetails),
@@ -62,7 +61,6 @@ namespace ExceptionAll.APIExample
 
             errorResponseService.AddErrorResponse(new ErrorResponse
             {
-                StatusCode = StatusCodes.Status400BadRequest,
                 ErrorTitle = "Bad Request - Fluent Validation",
                 ExceptionType = typeof(FluentValidation.ValidationException),
                 DetailsType = typeof(BadRequestDetails),

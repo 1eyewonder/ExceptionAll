@@ -33,9 +33,7 @@ namespace ExceptionAll.Services
                 .TryGetValue(context.Exception.GetType(),
                 out ErrorResponse response))
             {
-                context.HttpContext.Response.StatusCode = response.StatusCode;
                 new ErrorResponseValidator().ValidateAndThrow(response);
-
                 var constructorInfo = response.DetailsType.GetConstructor(new Type[]
                 {
                     typeof(ExceptionContext),
@@ -45,6 +43,7 @@ namespace ExceptionAll.Services
                 });
 
                 details = (ProblemDetails)constructorInfo.Invoke(new object[] { context, response.ErrorTitle, null, null });
+                context.HttpContext.Response.StatusCode = (int)details.Status;
 
                 if (response.LogAction is not null)
                 {
@@ -65,10 +64,8 @@ namespace ExceptionAll.Services
         }
 
         public IActionResult GetResponse<T>(ActionContext context, int statusCode, string message = null) where T : ProblemDetails
-        {
-            context.HttpContext.Response.StatusCode = statusCode;
+        {            
             T details;
-
             if (!typeof(T).IsSubclassOf(typeof(ProblemDetails)) &&
                 typeof(T) == typeof(ProblemDetails))
             {
@@ -88,6 +85,7 @@ namespace ExceptionAll.Services
                 throw new Exception($"Error when trying to invoke object constructor", e);
             }
 
+            context.HttpContext.Response.StatusCode = (int)details.Status;
             Logger.LogTrace(message ?? nameof(T).Replace("Details", "").Trim());
             return new ObjectResult(details)
             {
