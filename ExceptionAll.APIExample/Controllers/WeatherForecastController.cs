@@ -34,9 +34,8 @@ namespace ExceptionAll.APIExample.Controllers
         {
             var rng = new Random();
 
-            // if id is null
-            //throw new ValidationException("Test");
-            return (ActionResult)_actionResultService.GetResponse<BadRequestDetails>(ControllerContext, 400, "Testing 123");
+            throw new ValidationException("Test");
+            //return (ActionResult)_actionResultService.GetResponse<BadRequestDetails>(ControllerContext, 400, "Testing 123");
             var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),

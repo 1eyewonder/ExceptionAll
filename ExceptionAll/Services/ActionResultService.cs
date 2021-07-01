@@ -34,8 +34,7 @@ namespace ExceptionAll.Services
                 out ErrorResponse response))
             {
                 context.HttpContext.Response.StatusCode = response.StatusCode;
-                var validator = new ErrorResponseValidator();
-                validator.ValidateAndThrow(response);
+                new ErrorResponseValidator().ValidateAndThrow(response);
 
                 var constructorInfo = response.DetailsType.GetConstructor(new Type[]
                 {

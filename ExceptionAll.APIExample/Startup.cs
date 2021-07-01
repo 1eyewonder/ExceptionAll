@@ -1,18 +1,17 @@
 using ExceptionAll.Details;
 using ExceptionAll.Dtos;
 using ExceptionAll.Filters;
+using ExceptionAll.Helpers;
 using ExceptionAll.Interfaces;
 using ExceptionAll.Services;
-using FluentValidation;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Text.Json.Serialization;
 
 namespace ExceptionAll.APIExample
 {
@@ -34,28 +33,46 @@ namespace ExceptionAll.APIExample
             services.AddControllers(x =>
             {
                 x.Filters.Add(typeof(ExceptionFilter));
+            }).AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             });
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExceptionAll.APIExample", Version = "v1" });            
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExceptionAll.APIExample", Version = "v1" });
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-            IErrorResponseService errorResponseService, IActionResultService actionResultService)
+        public void Configure(IApplicationBuilder app,
+            IErrorResponseService errorResponseService,
+            IActionResultService actionResultService)
         {
             errorResponseService.AddErrorResponse(new ErrorResponse
             {
-                StatusCode = 400,
-                ErrorTitle = "Bad Request",
-                ExceptionType = typeof(ValidationException),
-                DetailsType= typeof(BadRequestDetails),
+                StatusCode = StatusCodes.Status400BadRequest,
+                ErrorTitle = "Bad Request - Data Annotations",
+                ExceptionType = typeof(System.ComponentModel.DataAnnotations.ValidationException),
+                DetailsType = typeof(BadRequestDetails),
                 LogAction = (e) => actionResultService
                     .Logger
                     .LogDebug(e, e.Message)
             });
+
+            errorResponseService.AddErrorResponse(new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                ErrorTitle = "Bad Request - Fluent Validation",
+                ExceptionType = typeof(FluentValidation.ValidationException),
+                DetailsType = typeof(BadRequestDetails),
+                LogAction = (e) => actionResultService
+                    .Logger
+                    .LogDebug(e, e.Message)
+            });
+
+            // Adds CorrelationId to incoming requests for tracking. Optional
+            app.UseCorrelationIdMiddleware();
 
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
