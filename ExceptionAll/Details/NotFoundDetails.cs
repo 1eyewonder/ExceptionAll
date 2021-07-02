@@ -11,7 +11,7 @@ namespace ExceptionAll.Details
     {
         public NotFoundDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title ?? "Not Found";
+            Title = string.IsNullOrEmpty(title) == false ? title :  "Not Found";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status404NotFound;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
@@ -20,7 +20,7 @@ namespace ExceptionAll.Details
 
         public NotFoundDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title ?? "Not Found";
+            Title = string.IsNullOrEmpty(title) == false ? title :  "Not Found";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status404NotFound;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";

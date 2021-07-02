@@ -6,13 +6,13 @@ using Xunit.Abstractions;
 
 namespace ExceptionAll.Tests.Details
 {
-    public class BadRequestDetailsTests : TestBase
+    public class NotFoundDetailsTests : TestBase
     {
-        private const string Title = "Bad Request";
+        private const string Title = "Not Found";
         private const string Message = "Test Message";
         private readonly List<ErrorDetail> _errorDetails = new();
 
-        public BadRequestDetailsTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        public NotFoundDetailsTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
             _errorDetails.Add(new ErrorDetail(Title, Message));
         }
@@ -24,14 +24,14 @@ namespace ExceptionAll.Tests.Details
             var mockActionContext = TestHelper.GetMockActionContext();
 
             // Act
-            var test = new BadRequestDetails(mockActionContext.Object);
+            var test = new NotFoundDetails(mockActionContext.Object);
 
             // Assess
             TestOutputHelper.WriteLine($"New object {test}");
 
             // Assert
             Assert.NotNull(test);
-            Assert.Equal(400, test.Status);
+            Assert.Equal(404, test.Status);
             Assert.NotEqual(Message, test.Detail);
         }
 
@@ -42,14 +42,14 @@ namespace ExceptionAll.Tests.Details
             var mockActionContext = TestHelper.GetMockActionContext();
 
             // Act
-            var test = new BadRequestDetails(mockActionContext.Object, Title);
+            var test = new NotFoundDetails(mockActionContext.Object, Title);
 
             // Assess
             TestOutputHelper.WriteLine($"New object {test}");
 
             // Assert
             Assert.NotNull(test);
-            Assert.Equal(400, test.Status);
+            Assert.Equal(404, test.Status);
             Assert.Equal(Title, test.Title);
             Assert.NotEqual(Message, test.Detail);
         }
@@ -61,14 +61,14 @@ namespace ExceptionAll.Tests.Details
             var mockActionContext = TestHelper.GetMockActionContext();
 
             // Act
-            var test = new BadRequestDetails(mockActionContext.Object, Title, Message);
+            var test = new NotFoundDetails(mockActionContext.Object, Title, Message);
 
             // Assess
             TestOutputHelper.WriteLine($"New object {test}");
 
             // Assert
             Assert.NotNull(test);
-            Assert.Equal(400, test.Status);
+            Assert.Equal(404, test.Status);
             Assert.Equal(Title, test.Title);
             Assert.Equal(Message, test.Detail);
         }
@@ -80,7 +80,7 @@ namespace ExceptionAll.Tests.Details
             var mockActionContext = TestHelper.GetMockActionContext();
 
             // Act
-            var test = new BadRequestDetails(mockActionContext.Object, Title, Message, _errorDetails);
+            var test = new NotFoundDetails(mockActionContext.Object, Title, Message, _errorDetails);
             test.Extensions.TryGetValue("Errors", out var value);
 
             // Assess
@@ -88,7 +88,7 @@ namespace ExceptionAll.Tests.Details
 
             // Assert
             Assert.NotNull(test);
-            Assert.Equal(400, test.Status);
+            Assert.Equal(404, test.Status);
             Assert.Equal(Title, test.Title);
             Assert.Equal(Message, test.Detail);
             Assert.Equal(_errorDetails, value);
@@ -101,14 +101,14 @@ namespace ExceptionAll.Tests.Details
             var mockActionContext = TestHelper.GetMockExceptionContext();
 
             // Act
-            var test = new BadRequestDetails(mockActionContext.Object);
+            var test = new NotFoundDetails(mockActionContext.Object);
 
             // Assess
             TestOutputHelper.WriteLine($"New object {test}");
 
             // Assert
             Assert.NotNull(test);
-            Assert.Equal(400, test.Status);
+            Assert.Equal(404, test.Status);
             Assert.NotEqual(Message, test.Detail);
         }
 
@@ -119,14 +119,14 @@ namespace ExceptionAll.Tests.Details
             var mockActionContext = TestHelper.GetMockExceptionContext();
 
             // Act
-            var test = new BadRequestDetails(mockActionContext.Object, Title);
+            var test = new NotFoundDetails(mockActionContext.Object, Title);
 
             // Assess
             TestOutputHelper.WriteLine($"New object {test}");
 
             // Assert
             Assert.NotNull(test);
-            Assert.Equal(400, test.Status);
+            Assert.Equal(404, test.Status);
             Assert.Equal(Title, test.Title);
             Assert.NotEqual(Message, test.Detail);
         }
@@ -138,14 +138,14 @@ namespace ExceptionAll.Tests.Details
             var mockActionContext = TestHelper.GetMockExceptionContext();
 
             // Act
-            var test = new BadRequestDetails(mockActionContext.Object, Title, Message);
+            var test = new NotFoundDetails(mockActionContext.Object, Title, Message);
 
             // Assess
             TestOutputHelper.WriteLine($"New object {test}");
 
             // Assert
             Assert.NotNull(test);
-            Assert.Equal(400, test.Status);
+            Assert.Equal(404, test.Status);
             Assert.Equal(Title, test.Title);
             Assert.Equal(Message, test.Detail);
         }
@@ -157,7 +157,7 @@ namespace ExceptionAll.Tests.Details
             var mockActionContext = TestHelper.GetMockExceptionContext();
 
             // Act
-            var test = new BadRequestDetails(mockActionContext.Object, Title, Message, _errorDetails);
+            var test = new NotFoundDetails(mockActionContext.Object, Title, Message, _errorDetails);
             test.Extensions.TryGetValue("Errors", out var value);
 
             // Assess
@@ -165,7 +165,7 @@ namespace ExceptionAll.Tests.Details
 
             // Assert
             Assert.NotNull(test);
-            Assert.Equal(400, test.Status);
+            Assert.Equal(404, test.Status);
             Assert.Equal(Title, test.Title);
             Assert.Equal(Message, test.Detail);
             Assert.Equal(_errorDetails, value);

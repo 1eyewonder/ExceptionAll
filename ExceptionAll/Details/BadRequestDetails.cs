@@ -11,7 +11,7 @@ namespace ExceptionAll.Details
     {
         public BadRequestDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title ?? "Bad Request";
+            Title = string.IsNullOrEmpty(title) == false ? title :  "Bad Request";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status400BadRequest;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
@@ -20,7 +20,7 @@ namespace ExceptionAll.Details
 
         public BadRequestDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title ?? "Bad Request";
+            Title = string.IsNullOrEmpty(title) == false ? title :  "Bad Request";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status400BadRequest;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";

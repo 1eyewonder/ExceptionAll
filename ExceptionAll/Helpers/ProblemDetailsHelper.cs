@@ -41,11 +41,8 @@ namespace ExceptionAll.Helpers
                 {"TraceId", context.HttpContext.TraceIdentifier }
             };
 
-            if (errors is not null && errors.Any())
-            {
-                dictionary.Add("Errors", errors);
-            }
-
+            if (errors is null || !errors.Any()) return dictionary;
+            dictionary.Add("Errors", errors);
             return dictionary;
         }
 
@@ -60,21 +57,12 @@ namespace ExceptionAll.Helpers
                 {"TraceId", context.HttpContext.TraceIdentifier }
             };
 
-            var errorList = new List<ErrorDetail>()
-            {
-                new("Error", context.Exception.Message)
-            };
-
-            if (errors is not null && errors.Any())
-            {
-                errorList.AddRange(errors);
-            }
-
-            dictionary.Add("Errors", errorList);
+            if (errors is null || !errors.Any()) return dictionary;
+            dictionary.Add("Errors", errors);
             return dictionary;
         }
 
-        public static ConstructorInfo GetActionContextConstructor<T>() 
+        public static ConstructorInfo GetActionContextConstructor<T>()
             where T : ProblemDetails
         {
             try

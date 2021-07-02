@@ -11,7 +11,7 @@ namespace ExceptionAll.Details
     {
         public InternalServerErrorDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title ?? "Internal Server Error";
+            Title = string.IsNullOrEmpty(title) == false ? title :  "Internal Server Error";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status500InternalServerError;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
@@ -20,7 +20,7 @@ namespace ExceptionAll.Details
 
         public InternalServerErrorDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title ?? "Internal Server Error";
+            Title = string.IsNullOrEmpty(title) == false ? title :  "Internal Server Error";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status500InternalServerError;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";

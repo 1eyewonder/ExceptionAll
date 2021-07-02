@@ -33,12 +33,12 @@ namespace ExceptionAll.Tests
             return mockException;
         }
 
-        public static Mock<ExceptionContext> GetMockExceptionContext(HttpContext context = null)
+        public static Mock<ExceptionContext> GetMockExceptionContext(HttpContext context = null, Exception exception = null)
         {
             var mockExceptionContext = new Mock<ExceptionContext>(
-                GetMockActionContext(context), new List<IFilterMetadata>());
+                GetMockActionContext(context).Object, new List<IFilterMetadata>());
             mockExceptionContext.Setup(x => x.Exception)
-                .Returns(GetMockException().Object);
+                .Returns(exception ?? GetMockException().Object);
 
             return mockExceptionContext;
         }

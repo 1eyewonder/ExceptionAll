@@ -11,7 +11,7 @@ namespace ExceptionAll.Details
     {
         public UnauthorizedDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title ?? "Unauthorized";
+            Title = string.IsNullOrEmpty(title) == false ? title :  "Unauthorized";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status401Unauthorized;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
@@ -20,7 +20,7 @@ namespace ExceptionAll.Details
 
         public UnauthorizedDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title ?? "Unauthorized";
+            Title = string.IsNullOrEmpty(title) == false ? title :  "Unauthorized";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status401Unauthorized;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
