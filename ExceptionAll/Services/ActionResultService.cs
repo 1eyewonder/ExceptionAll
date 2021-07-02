@@ -10,12 +10,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace ExceptionAll.Services
 {
     public class ActionResultService : IActionResultService
     {
         private readonly IErrorResponseService _errorResponseService;
+        public ILogger<IActionResultService> Logger { get; init; }
 
         public ActionResultService(ILogger<IActionResultService> logger,
             IErrorResponseService errorResponseService)
@@ -23,8 +25,6 @@ namespace ExceptionAll.Services
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _errorResponseService = errorResponseService ?? throw new ArgumentNullException(nameof(errorResponseService));
         }
-
-        public ILogger<IActionResultService> Logger { get; init; }
 
         public IActionResult GetErrorResponse(ExceptionContext context)
         {
@@ -34,17 +34,13 @@ namespace ExceptionAll.Services
                 out ErrorResponse response))
             {
                 new ErrorResponseValidator().ValidateAndThrow(response);
-                var constructorInfo = response.DetailsType.GetConstructor(new Type[]
+                var constructorInfo = GetExceptionContextConstructor(response.DetailsType);
+                details = (ProblemDetails)constructorInfo.Invoke(new object[]
                 {
-                    typeof(ExceptionContext),
-                    typeof(string),
-                    typeof(string),
-                    typeof(List<ErrorDetail>)
+                    context, response.ErrorTitle, null, null
                 });
 
-                details = (ProblemDetails)constructorInfo.Invoke(new object[] { context, response.ErrorTitle, null, null });
                 context.HttpContext.Response.StatusCode = (int)details.Status;
-
                 if (response.LogAction is not null)
                 {
                     response.LogAction(context.Exception);
@@ -64,7 +60,7 @@ namespace ExceptionAll.Services
         }
 
         public IActionResult GetResponse<T>(ActionContext context, string message = null) where T : ProblemDetails
-        {            
+        {
             T details;
             if (!typeof(T).IsSubclassOf(typeof(ProblemDetails)) &&
                 typeof(T) == typeof(ProblemDetails))
@@ -77,7 +73,7 @@ namespace ExceptionAll.Services
             try
             {
                 var constructorInfo = ProblemDetailsHelper.GetActionContextConstructor<T>();
-                details = (T)constructorInfo.Invoke(new object[] { context, "Caught Exception", message ?? null, null });                
+                details = (T)constructorInfo.Invoke(new object[] { context, "Caught Exception", message ?? null, null });
             }
             catch (Exception e)
             {
@@ -92,6 +88,24 @@ namespace ExceptionAll.Services
             {
                 StatusCode = details.Status
             };
+        }
+
+        private static ConstructorInfo GetExceptionContextConstructor(Type type)
+        {
+            try
+            {
+                return type.GetConstructor(new Type[]
+                {
+                    typeof(ExceptionContext),
+                    typeof(string),
+                    typeof(string),
+                    typeof(List<ErrorDetail>)
+                });
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error creating constructor for type: {type}", e);
+            }
         }
     }
 }
