@@ -30,7 +30,7 @@ namespace ExceptionAll.Tests.Details
             var test = new InternalServerErrorDetails(mockActionContext.Object);
 
             // Assess
-            TestOutputHelper.WriteLine($"New object {test}");
+            TestOutputHelper.WriteLine($"New object {test.ToJson()}");
 
             // Assert
             Assert.NotNull(test);
@@ -48,7 +48,7 @@ namespace ExceptionAll.Tests.Details
             var test = new InternalServerErrorDetails(mockActionContext.Object, Title);
 
             // Assess
-            TestOutputHelper.WriteLine($"New object {test}");
+            TestOutputHelper.WriteLine($"New object {test.ToJson()}");
 
             // Assert
             Assert.NotNull(test);
@@ -67,7 +67,7 @@ namespace ExceptionAll.Tests.Details
             var test = new InternalServerErrorDetails(mockActionContext.Object, Title, Message);
 
             // Assess
-            TestOutputHelper.WriteLine($"New object {test}");
+            TestOutputHelper.WriteLine($"New object {test.ToJson()}");
 
             // Assert
             Assert.NotNull(test);
@@ -87,7 +87,7 @@ namespace ExceptionAll.Tests.Details
             test.Extensions.TryGetValue("Errors", out var value);
 
             // Assess
-            TestOutputHelper.WriteLine($"New object {test}");
+            TestOutputHelper.WriteLine($"New object {test.ToJson()}");
 
             // Assert
             Assert.NotNull(test);
@@ -120,7 +120,7 @@ namespace ExceptionAll.Tests.Details
             var test = new InternalServerErrorDetails(mockActionContext.Object);
 
             // Assess
-            TestOutputHelper.WriteLine($"New object {test}");
+            TestOutputHelper.WriteLine($"New object {test.ToJson()}");
 
             // Assert
             Assert.NotNull(test);
@@ -138,7 +138,7 @@ namespace ExceptionAll.Tests.Details
             var test = new InternalServerErrorDetails(mockActionContext.Object, Title);
 
             // Assess
-            TestOutputHelper.WriteLine($"New object {test}");
+            TestOutputHelper.WriteLine($"New object {test.ToJson()}");
 
             // Assert
             Assert.NotNull(test);
@@ -157,7 +157,7 @@ namespace ExceptionAll.Tests.Details
             var test = new InternalServerErrorDetails(mockActionContext.Object, Title, Message);
 
             // Assess
-            TestOutputHelper.WriteLine($"New object {test}");
+            TestOutputHelper.WriteLine($"New object {test.ToJson()}");
 
             // Assert
             Assert.NotNull(test);
@@ -177,7 +177,7 @@ namespace ExceptionAll.Tests.Details
             test.Extensions.TryGetValue("Errors", out var value);
 
             // Assess
-            TestOutputHelper.WriteLine($"New object {test}");
+            TestOutputHelper.WriteLine($"New object {test.ToJson()}");
 
             // Assert
             Assert.NotNull(test);

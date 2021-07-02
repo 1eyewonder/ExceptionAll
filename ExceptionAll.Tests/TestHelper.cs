@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -11,11 +12,22 @@ namespace ExceptionAll.Tests
 {
     public static class TestHelper
     {
+        public static string ToJson(this object obj)
+        {
+            return JsonConvert.SerializeObject(obj,
+                Formatting.None,
+                new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    Formatting = Formatting.Indented
+                });
+        }
+
         public static Mock<ActionContext> GetMockActionContext(HttpContext context = null)
         {
             var mockActionContext = new Mock<ActionContext>(
-                context ?? GetMockHttpContext(), 
-                new RouteData(), 
+                context ?? GetMockHttpContext(),
+                new RouteData(),
                 new ActionDescriptor());
             return mockActionContext;
         }

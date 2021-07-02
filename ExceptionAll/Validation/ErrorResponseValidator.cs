@@ -9,10 +9,17 @@ namespace ExceptionAll.Validation
     {
         public ErrorResponseValidator()
         {
+            RuleFor(x => x.ExceptionType)
+                .Must(x => x.IsSubclassOf(typeof(Exception)))
+                .When(x => x.ExceptionType != typeof(Exception));
+
             RuleFor(x => x.ExceptionType).NotNull();
-            RuleFor(x => x.ExceptionType.BaseType).Equal(typeof(Exception));
+
+            RuleFor(x => x.DetailsType)
+                .Must(x => x.IsSubclassOf(typeof(ProblemDetails)));
+
             RuleFor(x => x.DetailsType).NotNull();
-            RuleFor(x => x.DetailsType.BaseType).Equal(typeof(ProblemDetails));
+
             RuleFor(x => x.ErrorTitle).NotEmpty();
         }
     }
