@@ -1,4 +1,5 @@
-﻿using ExceptionAll.Dtos;
+﻿using System;
+using ExceptionAll.Dtos;
 using ExceptionAll.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ namespace ExceptionAll.Details
     {
         public UnauthorizedDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
+            if (context is null) throw new ArgumentNullException(nameof(context));
             Title = string.IsNullOrEmpty(title) == false ? title :  "Unauthorized";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status401Unauthorized;
@@ -20,6 +22,7 @@ namespace ExceptionAll.Details
 
         public UnauthorizedDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
+            if (context is null) throw new ArgumentNullException(nameof(context));
             Title = string.IsNullOrEmpty(title) == false ? title :  "Unauthorized";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status401Unauthorized;

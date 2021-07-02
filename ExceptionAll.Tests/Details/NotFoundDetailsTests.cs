@@ -1,6 +1,9 @@
-﻿using ExceptionAll.Details;
+﻿using System;
+using ExceptionAll.Details;
 using ExceptionAll.Dtos;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -95,6 +98,19 @@ namespace ExceptionAll.Tests.Details
         }
 
         [Fact]
+        public void ActionContextConstructor_ShouldThrowArgumentNullException()
+        {
+            // Arrange
+            ActionContext context = null;
+
+            // Act
+            var action = new Func<NotFoundDetails>(() => new NotFoundDetails(context));
+
+            // Assert
+            Assert.Throws<ArgumentNullException>(action);
+        }
+
+        [Fact]
         public void ExceptionContextConstructor_ShouldSuccessfullyConstruct1()
         {
             // Arrange
@@ -169,6 +185,19 @@ namespace ExceptionAll.Tests.Details
             Assert.Equal(Title, test.Title);
             Assert.Equal(Message, test.Detail);
             Assert.Equal(_errorDetails, value);
+        }
+
+        [Fact]
+        public void ExceptionContextConstructor_ShouldThrowArgumentNullException()
+        {
+            // Arrange
+            ExceptionContext context = null;
+
+            // Act
+            var action = new Func<NotFoundDetails>(() => new NotFoundDetails(context));
+
+            // Assert
+            Assert.Throws<ArgumentNullException>(action);
         }
     }
 }
