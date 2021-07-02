@@ -11,20 +11,20 @@ namespace ExceptionAll.Details
     {
         public BadRequestDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title;
+            Title = title ?? "Bad Request";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status400BadRequest;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
+            this.AddDefaultExtensionsFromContext(context, errors);
         }
 
         public BadRequestDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title;
+            Title = title ?? "Bad Request";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status400BadRequest;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
+            this.AddDefaultExtensionsFromContext(context, errors);
         }
     }
 }

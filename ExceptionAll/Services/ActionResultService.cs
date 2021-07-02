@@ -31,7 +31,7 @@ namespace ExceptionAll.Services
             ProblemDetails details;
             if (_errorResponseService.GetErrorResponses()
                 .TryGetValue(context.Exception.GetType(),
-                out ErrorResponse response))
+                out var response))
             {
                 new ErrorResponseValidator().ValidateAndThrow(response);
                 var constructorInfo = GetExceptionContextConstructor(response.DetailsType);
@@ -40,11 +40,8 @@ namespace ExceptionAll.Services
                     context, response.ErrorTitle, null, null
                 });
 
-                context.HttpContext.Response.StatusCode = (int)details.Status;
-                if (response.LogAction is not null)
-                {
-                    response.LogAction(context.Exception);
-                }
+                if (details.Status != null) context.HttpContext.Response.StatusCode = (int)details.Status;
+                response.LogAction?.Invoke(context.Exception);
             }
             else
             {
@@ -82,7 +79,8 @@ namespace ExceptionAll.Services
             }
 
             new ProblemDetailsValidator<T>().ValidateAndThrow(details);
-            context.HttpContext.Response.StatusCode = (int)details.Status;
+            if (details.Status != null) context.HttpContext.Response.StatusCode = (int)details.Status;
+
             Logger.LogTrace(message ?? nameof(T).Replace("Details", "").Trim());
             return new ObjectResult(details)
             {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ExceptionAll.Filters
 {
-    public class ExceptionFilter : ExceptionFilterAttribute, IExceptionFilter
+    public class ExceptionFilter : ExceptionFilterAttribute
     {
         private readonly IActionResultService _actionResultService;
 

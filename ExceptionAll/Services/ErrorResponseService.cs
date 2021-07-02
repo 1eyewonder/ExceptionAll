@@ -10,7 +10,7 @@ namespace ExceptionAll.Services
 {
     public class ErrorResponseService : IErrorResponseService
     {
-        private Dictionary<Type, ErrorResponse> ErrorResponses { get; set; } = new Dictionary<Type, ErrorResponse>();
+        private Dictionary<Type, ErrorResponse> ErrorResponses { get; set; } = new();
 
         public void AddErrorResponse(ErrorResponse response)
         {

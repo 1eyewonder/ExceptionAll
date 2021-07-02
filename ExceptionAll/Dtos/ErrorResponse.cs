@@ -8,6 +8,5 @@ namespace ExceptionAll.Dtos
         public Type ExceptionType { get; set; }
         public Type DetailsType { get; set; }
         public Action<Exception> LogAction { get; set; } = null;
-        public bool ExceptionVisibleToUser { get; set; } = false;
     }
 }

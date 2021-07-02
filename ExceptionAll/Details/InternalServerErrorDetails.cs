@@ -11,20 +11,20 @@ namespace ExceptionAll.Details
     {
         public InternalServerErrorDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title;
+            Title = title ?? "Internal Server Error";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status500InternalServerError;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
+            this.AddDefaultExtensionsFromContext(context, errors);
         }
 
         public InternalServerErrorDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title;
+            Title = title ?? "Internal Server Error";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status500InternalServerError;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
+            this.AddDefaultExtensionsFromContext(context, errors);
         }
     }
 }

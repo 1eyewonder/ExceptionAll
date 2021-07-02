@@ -14,9 +14,9 @@ namespace ExceptionAll.Helpers
             ActionContext context,
             List<ErrorDetail> errors = null)
         {
-            foreach (var key in GetExtensionsFromContext(context, errors))
+            foreach (var (key, value) in GetExtensionsFromContext(context, errors))
             {
-                details.Extensions.Add(key.Key, key.Value);
+                details.Extensions.Add(key, value);
             }
         }
 
@@ -24,9 +24,9 @@ namespace ExceptionAll.Helpers
             ExceptionContext context,
             List<ErrorDetail> errors = null)
         {
-            foreach (var key in GetExtensionsFromContext(context, errors))
+            foreach (var (key, value) in GetExtensionsFromContext(context, errors))
             {
-                details.Extensions.Add(key.Key, key.Value);
+                details.Extensions.Add(key, value);
             }
         }
 
@@ -62,7 +62,7 @@ namespace ExceptionAll.Helpers
 
             var errorList = new List<ErrorDetail>()
             {
-                new ErrorDetail("Error", context.Exception.Message)
+                new("Error", context.Exception.Message)
             };
 
             if (errors is not null && errors.Any())
@@ -79,7 +79,7 @@ namespace ExceptionAll.Helpers
         {
             try
             {
-                return typeof(T).GetConstructor(new Type[]
+                return typeof(T).GetConstructor(new[]
                 {
                     typeof(ActionContext),
                     typeof(string),

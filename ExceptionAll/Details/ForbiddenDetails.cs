@@ -11,20 +11,20 @@ namespace ExceptionAll.Details
     {
         public ForbiddenDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title;
+            Title = title ?? "Forbidden";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status403Forbidden;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
+            this.AddDefaultExtensionsFromContext(context, errors);
         }
 
         public ForbiddenDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title;
+            Title = title ?? "Forbidden";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status403Forbidden;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
+            this.AddDefaultExtensionsFromContext(context, errors);
         }
     }
 }

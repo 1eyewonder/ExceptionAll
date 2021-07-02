@@ -30,7 +30,7 @@ namespace ExceptionAll.APIExample.Controllers
         }
 
         [HttpGet]
-        [Route("api/Get/{id}")]
+        [Route("api/Get/{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
             var rng = new Random();

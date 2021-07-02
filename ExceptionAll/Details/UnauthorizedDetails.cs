@@ -11,20 +11,20 @@ namespace ExceptionAll.Details
     {
         public UnauthorizedDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title;
+            Title = title ?? "Unauthorized";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status401Unauthorized;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
+            this.AddDefaultExtensionsFromContext(context, errors);
         }
 
         public UnauthorizedDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
         {
-            Title = title;
+            Title = title ?? "Unauthorized";
             Instance = context.HttpContext.Request.Path;
             Status = StatusCodes.Status401Unauthorized;
             Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            ProblemDetailsHelper.AddDefaultExtensionsFromContext(this, context, errors);
+            this.AddDefaultExtensionsFromContext(context, errors);
         }
     }
 }
