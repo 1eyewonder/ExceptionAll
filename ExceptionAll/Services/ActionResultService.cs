@@ -70,7 +70,7 @@ namespace ExceptionAll.Services
             try
             {
                 var constructorInfo = ProblemDetailsHelper.GetActionContextConstructor<T>();
-                details = (T)constructorInfo.Invoke(new object[] { context, "Caught Exception", message ?? null, null });
+                details = (T)constructorInfo.Invoke(new object[] { context, "Caught Exception", message, null });
             }
             catch (Exception e)
             {

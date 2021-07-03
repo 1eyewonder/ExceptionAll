@@ -1,12 +1,8 @@
-﻿using ExceptionAll.Details;
-using ExceptionAll.Dtos;
-using ExceptionAll.Services;
-using ExceptionAll.Validation;
-using Microsoft.Extensions.Logging;
-using Moq;
-using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using FluentValidation;
+using System.Linq;
+using ExceptionAll.Dtos;
+using ExceptionAll.Validation;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -52,77 +48,14 @@ namespace ExceptionAll.Tests.Dtos
             Assert.True(!test.IsValid);
         }
 
-        public static IEnumerable<object[]> GetValidErrorResponses()
+        public  static IEnumerable<object[]> GetValidErrorResponses()
         {
-            return new List<object[]>
-            {
-                // Every property populated
-                new object[]{new ErrorResponse
-                {
-                    ErrorTitle = "Test",
-                    ExceptionType = typeof(Exception),
-                    DetailsType = typeof(BadRequestDetails),
-                    LogAction =  (x) => new Mock<ActionResultService>().Object.Logger.LogDebug(x, "Test")
-                }},
-
-                // No title
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(Exception),
-                    DetailsType = typeof(BadRequestDetails),
-                    LogAction =  (x) => new Mock<ActionResultService>().Object.Logger.LogDebug(x, "Test")
-                }},
-
-                // No log action
-                new object[]{new ErrorResponse
-                {
-                    ErrorTitle = "Test",
-                    ExceptionType = typeof(Exception),
-                    DetailsType = typeof(BadRequestDetails)
-                }},
-
-                // Only details type
-                new object[]{new ErrorResponse
-                {
-                    DetailsType = typeof(NotFoundDetails)
-                }},
-
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(ArgumentException),
-                    DetailsType = typeof(NotFoundDetails)
-                }},
-
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(ArgumentNullException),
-                    DetailsType = typeof(NotFoundDetails)
-                }},
-
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(OperationCanceledException),
-                    DetailsType = typeof(NotFoundDetails)
-                }},
-
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(ValidationException),
-                    DetailsType = typeof(NotFoundDetails)
-                }},
-            };
+            return TestHelper.GetValidErrorResponses().ToList();
         }
 
         public static IEnumerable<object[]> GetInvalidErrorResponses()
         {
-            return new List<object[]>
-            {
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(string),
-                    DetailsType = typeof(ErrorResponse),
-                }},
-            };
+            return TestHelper.GetInvalidErrorResponses().ToList();
         }
     }
 }

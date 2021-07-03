@@ -10,8 +10,6 @@ namespace ExceptionAll.Interfaces
 
         void AddErrorResponses(List<ErrorResponse> responses);
 
-        void ClearErrorResponses();
-
         Dictionary<Type, ErrorResponse> GetErrorResponses();
     }
 }
