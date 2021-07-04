@@ -1,10 +1,8 @@
 ﻿using ExceptionAll.Details;
 using ExceptionAll.Interfaces;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -62,6 +60,14 @@ namespace ExceptionAll.APIExample.Controllers
             .ToArray();
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("api/GetSomething")]
+        public async Task<IActionResult> GetSomethingWithQuery([FromQuery]string test)
+        {
+            return _actionResultService.GetResponse<NotFoundDetails>(ControllerContext,
+                $"No item exists with name of {test}");
         }
     }
 }

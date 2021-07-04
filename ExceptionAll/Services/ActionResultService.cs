@@ -17,7 +17,7 @@ namespace ExceptionAll.Services
     public class ActionResultService : IActionResultService
     {
         private readonly IErrorResponseService _errorResponseService;
-        public ILogger<IActionResultService> Logger { get; init; }
+        public ILogger<IActionResultService> Logger { get; }
 
         public ActionResultService(ILogger<IActionResultService> logger,
             IErrorResponseService errorResponseService)
@@ -75,7 +75,7 @@ namespace ExceptionAll.Services
             catch (Exception e)
             {
                 Logger.LogError(e, e.Message);
-                throw new Exception($"Error when trying to invoke object constructor", e);
+                throw new Exception("Error when trying to invoke object constructor", e);
             }
 
             new ProblemDetailsValidator<T>().ValidateAndThrow(details);
@@ -92,7 +92,7 @@ namespace ExceptionAll.Services
         {
             try
             {
-                return type.GetConstructor(new Type[]
+                return type.GetConstructor(new[]
                 {
                     typeof(ExceptionContext),
                     typeof(string),

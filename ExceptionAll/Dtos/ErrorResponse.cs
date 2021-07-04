@@ -4,9 +4,9 @@ namespace ExceptionAll.Dtos
 {
     public class ErrorResponse
     {
-        public string ErrorTitle { get; set; } = "Default Title";
-        public Type ExceptionType { get; set; } = typeof(Exception);
-        public Type DetailsType { get; set; }
-        public Action<Exception> LogAction { get; set; } = null;
+        public string ErrorTitle { get; init; } = "Default Title";
+        public Type ExceptionType { get; init; } = typeof(Exception);
+        public Type DetailsType { get; init; }
+        public Action<Exception> LogAction { get; init; }
     }
 }

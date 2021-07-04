@@ -30,7 +30,7 @@ namespace ExceptionAll.Helpers
             }
         }
 
-        public static IDictionary<string, object> GetExtensionsFromContext(ActionContext context,
+        private static IDictionary<string, object> GetExtensionsFromContext(ActionContext context,
             List<ErrorDetail> errors = null)
         {
             var dictionary = new Dictionary<string, object>
@@ -46,7 +46,7 @@ namespace ExceptionAll.Helpers
             return dictionary;
         }
 
-        public static IDictionary<string, object> GetExtensionsFromContext(ExceptionContext context,
+        private static IDictionary<string, object> GetExtensionsFromContext(ExceptionContext context,
             List<ErrorDetail> errors = null)
         {
             var dictionary = new Dictionary<string, object>
