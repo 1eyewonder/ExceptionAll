@@ -6,13 +6,14 @@
     <RepositoryUrl>https://github.com/1eyewonder/ExceptionAll</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Global Exception Handling</PackageTags>
-    <Description>Lightweight extension for adding structured, global error handling to Web API solutions.
+    <Description>Lightweight extension for adding structured, global error handling to .NET Core Web API solutions.
 
-Icon Artist: Freepik, https://www.freepik.com</Description>
+Icon Artist: Freepik: https://www.freepik.com</Description>
     <Copyright>2021</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>risk.png</PackageIcon>
     <PackageIconUrl />
+    <Authors>Bronson Bata</Authors>
   </PropertyGroup>
 
   <ItemGroup>
