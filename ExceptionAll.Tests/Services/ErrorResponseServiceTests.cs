@@ -59,7 +59,10 @@ namespace ExceptionAll.Tests.Services
             };
 
             // Act
-            mockService.Object.AddErrorResponses(responses);
+            foreach (var response in responses)
+            {
+                mockService.Object.AddErrorResponse(response);
+            }
 
             // Assess
             TestOutputHelper.WriteLine($"Error Responses: {responses.ToJson()}");
@@ -70,31 +73,23 @@ namespace ExceptionAll.Tests.Services
         }
 
         [Fact]
-        public void AddErrorResponses_ShouldThrow()
+        public void AddErrorResponse_ShouldThrow()
         {
             // Arrange
             var mockLogger = new Mock<ILogger<IErrorResponseService>>();
             var mockService = new Mock<ErrorResponseService>(mockLogger.Object);
-            var responses = new List<ErrorResponse>
+            var response = new ErrorResponse()
             {
-                new()
-                {
-                    ExceptionType = typeof(OperationCanceledException),
-                    DetailsType = typeof(NotFoundDetails)
-                },
-
-                new()
-                {
-                    ExceptionType = typeof(OperationCanceledException),
-                    DetailsType = typeof(NotFoundDetails)
-                },
+                ExceptionType = typeof(OperationCanceledException),
+                DetailsType = typeof(NotFoundDetails)
             };
 
             // Act
-            var action = new Action(() => mockService.Object.AddErrorResponses(responses));
+            mockService.Object.AddErrorResponse(response);
+            var action = new Action(() => mockService.Object.AddErrorResponse(response));
 
             // Assess
-            TestOutputHelper.WriteLine($"Error Responses: {responses.ToJson()}");
+            TestOutputHelper.WriteLine($"Error Responses: {response.ToJson()}");
 
             // Assert
             Assert.Throws<ArgumentException>(action);

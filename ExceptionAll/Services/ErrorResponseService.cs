@@ -2,10 +2,9 @@
 using ExceptionAll.Interfaces;
 using ExceptionAll.Validation;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.Logging;
 
 namespace ExceptionAll.Services
 {
@@ -31,19 +30,6 @@ namespace ExceptionAll.Services
             }
 
             ErrorResponses.Add(response.ExceptionType, response);
-        }
-
-        public void AddErrorResponses(List<ErrorResponse> responses)
-        {
-            if (responses is null || !responses.Any())
-            {
-                throw new ArgumentNullException(nameof(responses));
-            }
-
-            foreach (var response in responses)
-            {
-                AddErrorResponse(response);
-            }
         }
 
         public Dictionary<Type, ErrorResponse> GetErrorResponses()

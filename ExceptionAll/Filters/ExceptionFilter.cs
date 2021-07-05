@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ExceptionAll.Filters
 {
+    /// <summary>
+    /// Catches exceptions and creates standard responses using the IActionResultService
+    /// </summary>
     public class ExceptionFilter : ExceptionFilterAttribute
     {
         private readonly IActionResultService _actionResultService;
