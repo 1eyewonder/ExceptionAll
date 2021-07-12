@@ -28,26 +28,6 @@ namespace ExceptionAll.APIExample.Controllers
         }
 
         [HttpGet]
-        [Route("api/Get/{id:int}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var rng = new Random();
-            if (id > 4)
-            {
-                return _actionResultService.GetResponse<NotFoundDetails>(ControllerContext, "The index is out of range");
-            }
-            var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray()[id];
-
-            return Ok(result);
-        }
-
-        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var rng = new Random();
@@ -58,10 +38,29 @@ namespace ExceptionAll.APIExample.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
-
+            throw new Exception("This is simulating an uncaught exception");
             return Ok(result);
         }
 
+        // If the developer doesn't want to use the template in all instances,
+        // wrapping the code in try catch will let you use your own logic
+        [HttpGet]
+        [Route("api.GetWithoutExceptionAllError")]
+        public async Task<IActionResult> GetWithoutExceptionAllError()
+        {
+            try
+            {
+                throw new Exception("Some exception");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
+            }
+        }
+
+        // If the developer needs to manually error handle, they can call
+        // the 'GetResponse' manually
         [HttpGet]
         [Route("api/GetSomething")]
         public async Task<IActionResult> GetSomethingWithQuery([FromQuery]string test)
