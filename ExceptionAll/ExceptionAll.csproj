@@ -9,9 +9,7 @@
     <Description>Lightweight extension for adding structured, global error handling to .NET Core Web API solutions.</Description>
     <Copyright>2021</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>risk.png</PackageIcon>
-    <PackageIconUrl />
-    <Authors>Bronson Bata</Authors>
+	  <Authors>Bronson Bata</Authors>
     <AssemblyVersion>1.0.1.0</AssemblyVersion>
     <FileVersion>1.0.1.0</FileVersion>
     <Version>1.0.1</Version>
