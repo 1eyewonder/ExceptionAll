@@ -42,25 +42,28 @@ In Startup.cs under 'Configure'
             // Adds a global response for a unique Error type
             // You can call 'AddErrorResponse' for every exception you would like
             // to globally handle
-            errorResponseService.AddErrorResponse(new ErrorResponse
-            {
-                // Error title returned
-                ErrorTitle = "Bad Request - Data Annotations",
+            errorResponseService.AddErrorResponse(                            
+                ErrorResponse
                 
-                // Type of error this response handles
-                ExceptionType = typeof(System.ComponentModel.DataAnnotations.ValidationException),
-                
-                // Returned object. Must inherit from Microsoft.AspNetCore.Mvc.ProblemDetails
-                // Different 'Detail' objects are used to allow for support in Swagger documentation
-                DetailsType = typeof(BadRequestDetails),
-                
-                // Allows developer to choose what level of logging happens for the 
-                // specific exception, if desired. If no desire to log, you don't have
-                // to declare an Action   
-                LogAction = (e) => actionResultService
-                    .Logger
-                    .LogDebug(e, e.Message)
-            });
+                    // Inject our action result service, mainly for passing
+                    // our optional logging action
+                    .CreateErrorResponse(actionResultService)
+                    
+                    // Error title returned
+                    .WithTitle("Bad Request - Fluent Validation")
+                    
+                    // Type of error this response handles
+                    .ForException(typeof(FluentValidation.ValidationException))
+                    
+                    // Returned object. Must inherit from Microsoft.AspNetCore.Mvc.ProblemDetails
+                    // Different 'Detail' objects are used to allow for support in Swagger documentation
+                    .WithReturnType(typeof(BadRequestDetails))
+                    
+                    // Allows developer to choose what level of logging happens for the 
+                    // specific exception, if desired. If no desire to log, you don't have
+                    // to declare an Action   
+                    .WithLogAction((x, e) => x.LogError("Something bad happened", e))
+            );
 ```
 
 # Custom Detail Responses
