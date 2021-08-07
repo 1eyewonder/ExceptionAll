@@ -11,20 +11,20 @@ namespace ExceptionAll.Services
     public class ErrorResponseService : IErrorResponseService
     {
         private readonly ILogger<IErrorResponseService> _logger;
-        private Dictionary<Type, ErrorResponse> ErrorResponses { get; } = new();
+        private Dictionary<Type, IErrorResponse> ErrorResponses { get; } = new();
 
         public ErrorResponseService(ILogger<IErrorResponseService> logger)
         {
             _logger = logger;
         }
 
-        public void AddErrorResponse(ErrorResponse response)
+        public void AddErrorResponse(IErrorResponse response)
         {
             new ErrorResponseValidator().ValidateAndThrow(response);
             if (ErrorResponses.ContainsKey(response.ExceptionType))
             {
                 _logger.LogError("Cannot add response to service because an " +
-                                   $"error response already exists for this exception type: {response.ExceptionType}");
+                                   $"error response already exists for the exception type: {response.ExceptionType}");
                 throw new ArgumentException($"Exception type, {response.ExceptionType}, " +
                                             "already exists in service collection");
             }
@@ -32,7 +32,7 @@ namespace ExceptionAll.Services
             ErrorResponses.Add(response.ExceptionType, response);
         }
 
-        public Dictionary<Type, ErrorResponse> GetErrorResponses()
+        public Dictionary<Type, IErrorResponse> GetErrorResponses()
         {
             return ErrorResponses;
         }

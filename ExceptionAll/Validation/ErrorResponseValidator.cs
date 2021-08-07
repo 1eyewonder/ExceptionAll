@@ -5,7 +5,7 @@ using System;
 
 namespace ExceptionAll.Validation
 {
-    public class ErrorResponseValidator : AbstractValidator<ErrorResponse>
+    public class ErrorResponseValidator : AbstractValidator<IErrorResponse>
     {
         public ErrorResponseValidator()
         {

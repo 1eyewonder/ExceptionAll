@@ -30,6 +30,7 @@ namespace ExceptionAll.APIExample.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            await Task.Delay(0);
             var rng = new Random();
             var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
@@ -39,7 +40,6 @@ namespace ExceptionAll.APIExample.Controllers
             })
             .ToArray();
             throw new Exception("This is simulating an uncaught exception");
-            return Ok(result);
         }
 
         // If the developer doesn't want to use the template in all instances,
@@ -48,6 +48,7 @@ namespace ExceptionAll.APIExample.Controllers
         [Route("api.GetWithoutExceptionAllError")]
         public async Task<IActionResult> GetWithoutExceptionAllError()
         {
+            await Task.Delay(0);
             try
             {
                 throw new Exception("Some exception");
@@ -65,6 +66,7 @@ namespace ExceptionAll.APIExample.Controllers
         [Route("api/GetSomething")]
         public async Task<IActionResult> GetSomethingWithQuery([FromQuery]string test)
         {
+            await Task.Delay(0);
             return _actionResultService.GetResponse<NotFoundDetails>(ControllerContext,
                 $"No item exists with name of {test}");
         }

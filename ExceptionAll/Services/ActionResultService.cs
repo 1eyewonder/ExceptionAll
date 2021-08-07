@@ -41,7 +41,7 @@ namespace ExceptionAll.Services
                 });
 
                 if (details.Status != null) context.HttpContext.Response.StatusCode = (int)details.Status;
-                response.LogAction?.Invoke(context.Exception);
+                response.LogAction?.Invoke(Logger, context.Exception);
             }
             else
             {

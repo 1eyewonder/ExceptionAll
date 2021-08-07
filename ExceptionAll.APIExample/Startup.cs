@@ -49,25 +49,14 @@ namespace ExceptionAll.APIExample
             IErrorResponseService errorResponseService,
             IActionResultService actionResultService)
         {
-            errorResponseService.AddErrorResponse(new ErrorResponse
-            {
-                ErrorTitle = "Bad Request - Data Annotations",
-                ExceptionType = typeof(System.ComponentModel.DataAnnotations.ValidationException),
-                DetailsType = typeof(BadRequestDetails),
-                LogAction = (e) => actionResultService
-                    .Logger
-                    .LogDebug(e, e.Message)
-            });
-
-            errorResponseService.AddErrorResponse(new ErrorResponse
-            {
-                ErrorTitle = "Bad Request - Fluent Validation",
-                ExceptionType = typeof(FluentValidation.ValidationException),
-                DetailsType = typeof(BadRequestDetails),
-                LogAction = (e) => actionResultService
-                    .Logger
-                    .LogDebug(e, e.Message)
-            });
+            errorResponseService.AddErrorResponse(
+                ErrorResponse
+                    .CreateErrorResponse(actionResultService)
+                    .WithTitle("Bad Request - Fluent Validation")
+                    .ForException(typeof(FluentValidation.ValidationException))
+                    .WithReturnType(typeof(BadRequestDetails))
+                    .WithLogAction((x, e) => x.LogError("Something bad happened", e))
+            );            
 
             // Adds CorrelationId to incoming requests for tracking. Optional
             app.UseCorrelationIdMiddleware();

@@ -71,83 +71,70 @@ namespace ExceptionAll.Tests
 
         public static Mock<ActionResultService>GetMockActionResultService()
         {
+            var mockErrorLogger = new Mock<ILogger<IErrorResponseService>>();
             var mockActionLogger = new Mock<ILogger<IActionResultService>>();
-            var mockErrorResponseService = new Mock<ErrorResponseService>();
+            var mockErrorResponseService = new Mock<ErrorResponseService>(mockErrorLogger.Object);
             return new Mock<ActionResultService>(
                     mockActionLogger.Object, 
                     mockErrorResponseService.Object);
         }
 
-        public static IEnumerable<object[]> GetValidErrorResponses()
+        public static IEnumerable<object[]> GetValidErrorResponses(IActionResultService actionResultService)
         {
             return new List<object[]>
             {
                 // Every property populated
-                new object[]{new ErrorResponse
-                {
-                    ErrorTitle = "Test",
-                    ExceptionType = typeof(Exception),
-                    DetailsType = typeof(BadRequestDetails),
-                    LogAction =  (x) => new Mock<ActionResultService>().Object.Logger.LogDebug(x, "Test")
-                }},
+                new object[]{
+                    ErrorResponse
+                        .CreateErrorResponse(actionResultService)
+                        .WithTitle("Bad Request - Fluent Validation")
+                        .ForException(typeof(ValidationException))
+                        .WithReturnType(typeof(BadRequestDetails))
+                        .WithLogAction((x, e) => x.LogError("Something bad happened", e))
+                },
 
                 // No title
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(Exception),
-                    DetailsType = typeof(BadRequestDetails),
-                    LogAction =  (x) => new Mock<ActionResultService>().Object.Logger.LogDebug(x, "Test")
-                }},
+                new object[]{
+                    ErrorResponse
+                        .CreateErrorResponse(actionResultService)
+                        .ForException(typeof(ValidationException))
+                        .WithReturnType(typeof(BadRequestDetails))
+                        .WithLogAction((x, e) => x.LogError("Something bad happened", e))
+                },
 
                 // No log action
-                new object[]{new ErrorResponse
-                {
-                    ErrorTitle = "Test",
-                    ExceptionType = typeof(Exception),
-                    DetailsType = typeof(BadRequestDetails)
-                }},
+                new object[]{
+                    ErrorResponse
+                        .CreateErrorResponse(actionResultService)
+                        .WithTitle("Bad Request - Fluent Validation")
+                        .ForException(typeof(ValidationException))
+                        .WithReturnType(typeof(BadRequestDetails))
+                },
 
                 // Only details type
-                new object[]{new ErrorResponse
-                {
-                    DetailsType = typeof(NotFoundDetails)
-                }},
+                new object[]{
+                    ErrorResponse
+                        .CreateErrorResponse(actionResultService)
+                        .WithReturnType(typeof(BadRequestDetails))
+                },
 
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(ArgumentException),
-                    DetailsType = typeof(NotFoundDetails)
-                }},
-
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(ArgumentNullException),
-                    DetailsType = typeof(NotFoundDetails)
-                }},
-
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(OperationCanceledException),
-                    DetailsType = typeof(NotFoundDetails)
-                }},
-
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(ValidationException),
-                    DetailsType = typeof(NotFoundDetails)
-                }},
+                // Only creation method
+                new object[]{
+                    ErrorResponse.CreateErrorResponse(actionResultService)
+                },
             };
         }
 
-        public static IEnumerable<object[]> GetInvalidErrorResponses()
+        public static IEnumerable<object[]> GetInvalidErrorResponses(IActionResultService actionResultService)
         {
             return new List<object[]>
             {
-                new object[]{new ErrorResponse
-                {
-                    ExceptionType = typeof(string),
-                    DetailsType = typeof(ErrorResponse),
-                }},
+                new object[]{
+                    ErrorResponse
+                        .CreateErrorResponse(actionResultService)
+                        .ForException(typeof(string))
+                        .WithReturnType(typeof(ErrorResponse))
+                }
             };
         }
     }

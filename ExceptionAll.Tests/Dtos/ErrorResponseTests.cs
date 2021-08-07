@@ -1,8 +1,7 @@
-﻿using System.Collections;
+﻿using ExceptionAll.Dtos;
+using ExceptionAll.Validation;
 using System.Collections.Generic;
 using System.Linq;
-using ExceptionAll.Dtos;
-using ExceptionAll.Validation;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -48,14 +47,16 @@ namespace ExceptionAll.Tests.Dtos
             Assert.True(!test.IsValid);
         }
 
-        public  static IEnumerable<object[]> GetValidErrorResponses()
+        public static IEnumerable<object[]> GetValidErrorResponses()
         {
-            return TestHelper.GetValidErrorResponses().ToList();
+            var mockActionResultService = TestHelper.GetMockActionResultService();
+            return TestHelper.GetValidErrorResponses(mockActionResultService.Object).ToList();
         }
 
         public static IEnumerable<object[]> GetInvalidErrorResponses()
         {
-            return TestHelper.GetInvalidErrorResponses().ToList();
+            var mockActionResultService = TestHelper.GetMockActionResultService();
+            return TestHelper.GetInvalidErrorResponses(mockActionResultService.Object).ToList();
         }
     }
 }

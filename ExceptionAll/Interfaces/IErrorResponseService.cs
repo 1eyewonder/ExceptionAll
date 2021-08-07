@@ -13,12 +13,12 @@ namespace ExceptionAll.Interfaces
         /// Add a standard error response for a specific exception type
         /// </summary>
         /// <param name="response"></param>
-        void AddErrorResponse(ErrorResponse response);
+        void AddErrorResponse(IErrorResponse response);
 
         /// <summary>
         /// Return all error responses in the current collection
         /// </summary>
         /// <returns></returns>
-        Dictionary<Type, ErrorResponse> GetErrorResponses();
+        Dictionary<Type, IErrorResponse> GetErrorResponses();
     }
 }
