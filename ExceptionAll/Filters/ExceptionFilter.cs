@@ -1,4 +1,5 @@
-﻿using ExceptionAll.Interfaces;
+﻿using System;
+using ExceptionAll.Interfaces;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ExceptionAll.Filters
@@ -12,7 +13,7 @@ namespace ExceptionAll.Filters
 
         public ExceptionFilter(IActionResultService actionResultService)
         {
-            _actionResultService = actionResultService;
+            _actionResultService = actionResultService ?? throw new ArgumentNullException(nameof(actionResultService));
         }
 
         public override void OnException(ExceptionContext context)

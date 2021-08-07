@@ -17,7 +17,7 @@ namespace ExceptionAll.Services
     public class ActionResultService : IActionResultService
     {
         private readonly IErrorResponseService _errorResponseService;
-        public ILogger<IActionResultService> Logger { get; }
+        private ILogger<IActionResultService> Logger { get; }
 
         public ActionResultService(ILogger<IActionResultService> logger,
             IErrorResponseService errorResponseService)
@@ -35,12 +35,17 @@ namespace ExceptionAll.Services
             {
                 new ErrorResponseValidator().ValidateAndThrow(response);
                 var constructorInfo = GetExceptionContextConstructor(response.DetailsType);
+
                 details = (ProblemDetails)constructorInfo.Invoke(new object[]
                 {
                     context, response.ErrorTitle, null, null
                 });
 
-                if (details.Status != null) context.HttpContext.Response.StatusCode = (int)details.Status;
+                if (details.Status != null)
+                {
+                    context.HttpContext.Response.StatusCode = (int)details.Status;
+                }
+
                 response.LogAction?.Invoke(Logger, context.Exception);
             }
             else
@@ -63,7 +68,7 @@ namespace ExceptionAll.Services
                 typeof(T) == typeof(ProblemDetails))
             {
                 var e = new Exception("ProblemDetails is not an acceptable type");
-                Logger.LogError("ProblemDetails is not a valid type for this class. Please refer to documentation for assistance", e);
+                Logger.LogError(e, "ProblemDetails is not a valid type for this class. Please refer to documentation for assistance");
                 throw e;
             }
 

@@ -42,10 +42,18 @@ namespace ExceptionAll.APIExample.Controllers
             throw new Exception("This is simulating an uncaught exception");
         }
 
+        [HttpGet]
+        [Route("api/GetNullRefError")]
+        public async Task<IActionResult> GetNullRefError(string param)
+        {
+            param = null;
+            throw new ArgumentNullException(nameof(param));
+        }
+
         // If the developer doesn't want to use the template in all instances,
         // wrapping the code in try catch will let you use your own logic
         [HttpGet]
-        [Route("api.GetWithoutExceptionAllError")]
+        [Route("api/GetWithoutExceptionAllError")]
         public async Task<IActionResult> GetWithoutExceptionAllError()
         {
             await Task.Delay(0);

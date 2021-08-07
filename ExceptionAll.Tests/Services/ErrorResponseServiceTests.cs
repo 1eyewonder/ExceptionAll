@@ -24,17 +24,40 @@ namespace ExceptionAll.Tests.Services
         {
             // Arrange
             var mockLogger = new Mock<ILogger<IErrorResponseService>>();
-            var mockService = new Mock<ErrorResponseService>(mockLogger.Object);
+            var service = new ErrorResponseService(mockLogger.Object);
 
             // Act
-            mockService.Object.AddErrorResponse(response);
+            service.AddErrorResponse(response);
 
             // Assess
             TestOutputHelper.WriteLine($"Error Response: {response.ToJson()}");
 
             // Act
-            Assert.NotNull(mockService.Object.GetErrorResponses());
-            Assert.NotEmpty(mockService.Object.GetErrorResponses());
+            Assert.NotNull(service.GetErrorResponses());
+            Assert.NotEmpty(service.GetErrorResponses());
+        }
+
+        [Fact]
+        public void AddErrorResponse_WithInvalidResponse_ShouldThrow()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger<IErrorResponseService>>();
+            var service = new ErrorResponseService(mockLogger.Object);
+            var response = ErrorResponse
+                .CreateErrorResponse()
+                .WithTitle(null)
+                .ForException<Exception>()
+                .WithReturnType<InternalServerErrorDetails>()
+                .WithLogAction(null);
+
+            // Act
+            var action = new Action(() => service.AddErrorResponse(response));
+
+            // Assess
+            TestOutputHelper.WriteLine($"Error Response: {response.ToJson()}");
+
+            // Act
+            Assert.Throws<ValidationException>(action);
         }
 
         [Fact]
@@ -42,36 +65,35 @@ namespace ExceptionAll.Tests.Services
         {
             // Arrange
             var mockErsLogger = new Mock<ILogger<IErrorResponseService>>();
-            var mockErrorResponseService = new Mock<ErrorResponseService>(mockErsLogger.Object);
-            var mockActionResultService = TestHelper.GetMockActionResultService();
+            var service = new ErrorResponseService(mockErsLogger.Object);
 
             var responses = new List<ErrorResponse>
             {
                 ErrorResponse
-                    .CreateErrorResponse(mockActionResultService.Object)
-                    .ForException(typeof(OperationCanceledException))
-                    .WithReturnType(typeof(NotFoundDetails))
+                    .CreateErrorResponse()
+                    .ForException<OperationCanceledException>()
+                    .WithReturnType<NotFoundDetails>()
                     .WithLogAction(null),
 
                 ErrorResponse
-                    .CreateErrorResponse(mockActionResultService.Object)
-                    .ForException(typeof(ValidationException))
-                    .WithReturnType(typeof(NotFoundDetails))
+                    .CreateErrorResponse()
+                    .ForException<ValidationException>()
+                    .WithReturnType<NotFoundDetails>()
                     .WithLogAction(null)
             };
 
             // Act
             foreach (var response in responses)
             {
-                mockErrorResponseService.Object.AddErrorResponse(response);
+                service.AddErrorResponse(response);
             }
 
             // Assess
             TestOutputHelper.WriteLine($"Error Responses: {responses.ToJson()}");
 
             // Assert
-            Assert.NotNull(mockErrorResponseService.Object.GetErrorResponses());
-            Assert.NotEmpty(mockErrorResponseService.Object.GetErrorResponses());
+            Assert.NotNull(service.GetErrorResponses());
+            Assert.NotEmpty(service.GetErrorResponses());
         }
 
         [Fact]
@@ -79,16 +101,15 @@ namespace ExceptionAll.Tests.Services
         {
             // Arrange
             var mockLogger = new Mock<ILogger<IErrorResponseService>>();
-            var mockService = new Mock<ErrorResponseService>(mockLogger.Object);
-            var mockActionResultService = TestHelper.GetMockActionResultService();
+            var service = new ErrorResponseService(mockLogger.Object);
             var response = ErrorResponse
-                .CreateErrorResponse(mockActionResultService.Object)
-                .ForException(typeof(OperationCanceledException))
-                .WithReturnType(typeof(NotFoundDetails));
+                .CreateErrorResponse()
+                .ForException<OperationCanceledException>()
+                .WithReturnType<NotFoundDetails>();
 
             // Act
-            mockService.Object.AddErrorResponse(response);
-            var action = new Action(() => mockService.Object.AddErrorResponse(response));
+            service.AddErrorResponse(response);
+            var action = new Action(() => service.AddErrorResponse(response));
 
             // Assess
             TestOutputHelper.WriteLine($"Error Responses: {response.ToJson()}");
@@ -99,8 +120,7 @@ namespace ExceptionAll.Tests.Services
 
         public static IEnumerable<object[]> GetValidErrorResponses()
         {
-            var mockActionResultService = TestHelper.GetMockActionResultService();
-            return TestHelper.GetValidErrorResponses(mockActionResultService.Object).ToList();
+            return TestHelper.GetValidErrorResponses().ToList();
         }
     }
 }

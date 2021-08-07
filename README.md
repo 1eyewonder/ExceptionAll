@@ -4,25 +4,14 @@ Lightweight extension for adding structured, global error handling to Web API so
 # Setup
 In Startup.cs add the following namespaces:
 ```
-using ExceptionAll.Details;
-using ExceptionAll.Dtos;
-using ExceptionAll.Filters;
 using ExceptionAll.Helpers;
 using ExceptionAll.Interfaces;
-using ExceptionAll.Services;
 ```
 
 In Startup.cs under 'ConfigureServices':
 
 ```csharp
-services.AddSingleton<IErrorResponseService, ErrorResponseService>();
-services.AddSingleton<IActionResultService, ActionResultService>();
-
-// This will also work for anyone implementing the MVC or REPR patterns
-services.AddControllers(x =>
-{
-    x.Filters.Add(typeof(ExceptionFilter));
-})
+services.AddExceptionAll()
 
 // This section is optional. I choose to use this option to keep my objects from returning nulls
 .AddJsonOptions(options =>
@@ -36,31 +25,38 @@ In Startup.cs under 'Configure'
 ```csharp
 // Inject the ErrorResponse and ActionResult service interfaces
  public void Configure(IApplicationBuilder app,
-            IErrorResponseService errorResponseService,
-            IActionResultService actionResultService)
+            IErrorResponseService errorResponseService)
         {
             // Adds a global response for a unique Error type
             // You can call 'AddErrorResponse' for every exception you would like
             // to globally handle
-            errorResponseService.AddErrorResponse(new ErrorResponse
-            {
-                // Error title returned
-                ErrorTitle = "Bad Request - Data Annotations",
+            errorResponseService.AddErrorResponse(                            
+                ErrorResponse
                 
-                // Type of error this response handles
-                ExceptionType = typeof(System.ComponentModel.DataAnnotations.ValidationException),
-                
-                // Returned object. Must inherit from Microsoft.AspNetCore.Mvc.ProblemDetails
-                // Different 'Detail' objects are used to allow for support in Swagger documentation
-                DetailsType = typeof(BadRequestDetails),
-                
-                // Allows developer to choose what level of logging happens for the 
-                // specific exception, if desired. If no desire to log, you don't have
-                // to declare an Action   
-                LogAction = (e) => actionResultService
-                    .Logger
-                    .LogDebug(e, e.Message)
-            });
+                    // Inject our action result service, mainly for passing
+                    // our optional logging action
+                    .CreateErrorResponse(actionResultService)
+                    
+                    // Error title returned
+                    .WithTitle("Bad Request - Fluent Validation")
+                    
+                    // Type of error this response handles
+                    .ForException(typeof(FluentValidation.ValidationException))
+                    
+                    // Returned object. Must inherit from Microsoft.AspNetCore.Mvc.ProblemDetails
+                    // Different 'Detail' objects are used to allow for support in Swagger documentation
+                    .WithReturnType(typeof(BadRequestDetails))
+                    
+                    // Allows developer to choose what level of logging happens for the 
+                    // specific exception, if desired. If no desire to log, you don't have
+                    // to declare an Action   
+                    .WithLogAction((x, e) => x.LogError("Something bad happened", e))
+            );
+            
+        // ExceptionAll also comes with an extension method which allows
+        // adding a list of IErrorResponses. This can be used if the developer 
+        // desires to migrate code to an outside static class
+        errorResponseService.AddErrorResponses(ExceptionAllConfiguration.GetErrorResponses());
 ```
 
 # Custom Detail Responses
