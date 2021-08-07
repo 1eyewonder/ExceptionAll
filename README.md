@@ -4,25 +4,14 @@ Lightweight extension for adding structured, global error handling to Web API so
 # Setup
 In Startup.cs add the following namespaces:
 ```
-using ExceptionAll.Details;
-using ExceptionAll.Dtos;
-using ExceptionAll.Filters;
 using ExceptionAll.Helpers;
 using ExceptionAll.Interfaces;
-using ExceptionAll.Services;
 ```
 
 In Startup.cs under 'ConfigureServices':
 
 ```csharp
-services.AddSingleton<IErrorResponseService, ErrorResponseService>();
-services.AddSingleton<IActionResultService, ActionResultService>();
-
-// This will also work for anyone implementing the MVC or REPR patterns
-services.AddControllers(x =>
-{
-    x.Filters.Add(typeof(ExceptionFilter));
-})
+services.AddExceptionAll()
 
 // This section is optional. I choose to use this option to keep my objects from returning nulls
 .AddJsonOptions(options =>
@@ -36,8 +25,7 @@ In Startup.cs under 'Configure'
 ```csharp
 // Inject the ErrorResponse and ActionResult service interfaces
  public void Configure(IApplicationBuilder app,
-            IErrorResponseService errorResponseService,
-            IActionResultService actionResultService)
+            IErrorResponseService errorResponseService)
         {
             // Adds a global response for a unique Error type
             // You can call 'AddErrorResponse' for every exception you would like
@@ -64,6 +52,11 @@ In Startup.cs under 'Configure'
                     // to declare an Action   
                     .WithLogAction((x, e) => x.LogError("Something bad happened", e))
             );
+            
+        // ExceptionAll also comes with an extension method which allows
+        // adding a list of IErrorResponses. This can be used if the developer 
+        // desires to migrate code to an outside static class
+        errorResponseService.AddErrorResponses(ExceptionAllConfiguration.GetErrorResponses());
 ```
 
 # Custom Detail Responses

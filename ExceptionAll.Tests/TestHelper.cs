@@ -38,9 +38,9 @@ namespace ExceptionAll.Tests
             return mockActionContext;
         }
 
-        public static Mock<Exception> GetMockException()
+        public static Mock<T> GetMockException<T>() where T : Exception
         {
-            var mockException = new Mock<Exception>();
+            var mockException = new Mock<T>();
             mockException.Setup(x => x.StackTrace)
                 .Returns("Test Stacktrace");
             mockException.Setup(x => x.Message)
@@ -51,12 +51,16 @@ namespace ExceptionAll.Tests
             return mockException;
         }
 
-        public static Mock<ExceptionContext> GetMockExceptionContext(HttpContext context = null, Exception exception = null)
+        public static Mock<ExceptionContext> GetMockExceptionContext<T>(HttpContext context = null, T exception = null) 
+            where T : Exception
         {
             var mockExceptionContext = new Mock<ExceptionContext>(
-                GetMockActionContext(context).Object, new List<IFilterMetadata>());
-            mockExceptionContext.Setup(x => x.Exception)
-                .Returns(exception ?? GetMockException().Object);
+                GetMockActionContext(context).Object, 
+                new List<IFilterMetadata>());
+
+            mockExceptionContext
+                .Setup(x => x.Exception)
+                .Returns(exception ?? GetMockException<T>().Object);
 
             return mockExceptionContext;
         }
@@ -69,71 +73,77 @@ namespace ExceptionAll.Tests
             return context;
         }
 
-        public static Mock<ActionResultService>GetMockActionResultService()
+        public static Mock<ActionResultService> GetMockActionResultService(IErrorResponseService service = null)
         {
             var mockErrorLogger = new Mock<ILogger<IErrorResponseService>>();
             var mockActionLogger = new Mock<ILogger<IActionResultService>>();
             var mockErrorResponseService = new Mock<ErrorResponseService>(mockErrorLogger.Object);
             return new Mock<ActionResultService>(
                     mockActionLogger.Object, 
-                    mockErrorResponseService.Object);
+                    service ?? mockErrorResponseService.Object);
         }
 
-        public static IEnumerable<object[]> GetValidErrorResponses(IActionResultService actionResultService)
+        public static Mock<ErrorResponseService> GetMockErrorResponseService()
+        {
+            var mockErrorLogger = new Mock<ILogger<IErrorResponseService>>();
+            return new Mock<ErrorResponseService>(mockErrorLogger.Object);
+        }
+
+        public static IEnumerable<object[]> GetValidErrorResponses()
         {
             return new List<object[]>
             {
                 // Every property populated
                 new object[]{
                     ErrorResponse
-                        .CreateErrorResponse(actionResultService)
+                        .CreateErrorResponse()
                         .WithTitle("Bad Request - Fluent Validation")
-                        .ForException(typeof(ValidationException))
-                        .WithReturnType(typeof(BadRequestDetails))
+                        .ForException<ValidationException>()
+                        .WithReturnType<BadRequestDetails>()
                         .WithLogAction((x, e) => x.LogError("Something bad happened", e))
                 },
 
                 // No title
                 new object[]{
                     ErrorResponse
-                        .CreateErrorResponse(actionResultService)
-                        .ForException(typeof(ValidationException))
-                        .WithReturnType(typeof(BadRequestDetails))
+                        .CreateErrorResponse()
+                        .ForException<ValidationException>()
+                        .WithReturnType<BadRequestDetails>()
                         .WithLogAction((x, e) => x.LogError("Something bad happened", e))
                 },
 
                 // No log action
                 new object[]{
                     ErrorResponse
-                        .CreateErrorResponse(actionResultService)
+                        .CreateErrorResponse()
                         .WithTitle("Bad Request - Fluent Validation")
-                        .ForException(typeof(ValidationException))
-                        .WithReturnType(typeof(BadRequestDetails))
+                        .ForException<ValidationException>()
+                        .WithReturnType<BadRequestDetails>()
                 },
 
                 // Only details type
                 new object[]{
                     ErrorResponse
-                        .CreateErrorResponse(actionResultService)
-                        .WithReturnType(typeof(BadRequestDetails))
+                        .CreateErrorResponse()
+                        .WithReturnType<BadRequestDetails>()
                 },
 
                 // Only creation method
                 new object[]{
-                    ErrorResponse.CreateErrorResponse(actionResultService)
+                    ErrorResponse.CreateErrorResponse()
                 },
             };
         }
 
-        public static IEnumerable<object[]> GetInvalidErrorResponses(IActionResultService actionResultService)
+        public static IEnumerable<object[]> GetInvalidErrorResponses()
         {
             return new List<object[]>
             {
                 new object[]{
                     ErrorResponse
-                        .CreateErrorResponse(actionResultService)
-                        .ForException(typeof(string))
-                        .WithReturnType(typeof(ErrorResponse))
+                        .CreateErrorResponse()
+                        .ForException<Exception>()
+                        .WithReturnType<ProblemDetails>()
                 }
             };
         }

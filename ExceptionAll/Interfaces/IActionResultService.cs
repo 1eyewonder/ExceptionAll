@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 
 namespace ExceptionAll.Interfaces
 {
@@ -9,8 +8,6 @@ namespace ExceptionAll.Interfaces
     /// </summary>
     public interface IActionResultService
     {
-        ILogger<IActionResultService> Logger { get; }
-
         /// <summary>
         /// Create an error response for a filter-caught exception
         /// </summary>

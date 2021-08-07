@@ -21,10 +21,8 @@ namespace ExceptionAll.Tests.Dtos
             var test = new ErrorResponseValidator().Validate(response);
 
             // Assess
-            foreach (var validationFailure in test.Errors)
-            {
-                TestOutputHelper.WriteLine($"Validation failure: {validationFailure.ErrorMessage}");
-            }
+            test.Errors.ForEach(x => 
+                TestOutputHelper.WriteLine($"Validation failure: {x.ErrorMessage}"));
 
             // Assert
             Assert.True(test.IsValid);
@@ -38,10 +36,8 @@ namespace ExceptionAll.Tests.Dtos
             var test = new ErrorResponseValidator().Validate(response);
 
             // Assess
-            foreach (var validationFailure in test.Errors)
-            {
-                TestOutputHelper.WriteLine($"Validation failure: {validationFailure.ErrorMessage}");
-            }
+            test.Errors.ForEach(x =>
+                TestOutputHelper.WriteLine($"Validation failure: {x.ErrorMessage}"));
 
             // Assert
             Assert.True(!test.IsValid);
@@ -49,14 +45,12 @@ namespace ExceptionAll.Tests.Dtos
 
         public static IEnumerable<object[]> GetValidErrorResponses()
         {
-            var mockActionResultService = TestHelper.GetMockActionResultService();
-            return TestHelper.GetValidErrorResponses(mockActionResultService.Object).ToList();
+            return TestHelper.GetValidErrorResponses().ToList();
         }
 
         public static IEnumerable<object[]> GetInvalidErrorResponses()
         {
-            var mockActionResultService = TestHelper.GetMockActionResultService();
-            return TestHelper.GetInvalidErrorResponses(mockActionResultService.Object).ToList();
+            return TestHelper.GetInvalidErrorResponses().ToList();
         }
     }
 }

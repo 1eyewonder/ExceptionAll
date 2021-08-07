@@ -1,59 +1,34 @@
 ﻿using ExceptionAll.Details;
 using ExceptionAll.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 
 namespace ExceptionAll.Dtos
 {
-    public interface IErrorResponse
-    {
-        Type DetailsType { get; }
-        string ErrorTitle { get; }
-        Type ExceptionType { get; }
-        Action<ILogger<IActionResultService>, Exception> LogAction { get; }
-    }
-
-    public interface IDetailsType : IErrorResponse
-    {
-        public ILogAction WithReturnType(Type returnType);
-    }
-
-    public interface IExceptionSelection : IErrorResponse
-    {
-        public IDetailsType ForException(Type exceptionType);
-    }
-
-    public interface ILogAction : IErrorResponse
-    {
-        public ErrorResponse WithLogAction(Action<ILogger<IActionResultService>, Exception> action);
-    }
-
-    public interface IResponseTitle : IErrorResponse
-    {
-        public IExceptionSelection WithTitle(string title);
-    }
-
     public class ErrorResponse : IResponseTitle,
         IExceptionSelection,
         IDetailsType,
         ILogAction
     {
-        private readonly IActionResultService _actionResultService;
+        public Type DetailsType { get; private set; } = typeof(InternalServerErrorDetails);
+        public string ErrorTitle { get; private set; } = "Error";
+        public Type ExceptionType { get; private set; } = typeof(Exception);
+        public Action<ILogger<IActionResultService>, Exception> LogAction { get; private set; } =
+            (x, e) => x.LogDebug(e, "ExceptionAll has caught an error");
 
-        private ErrorResponse(IActionResultService actionResultService)
+        private ErrorResponse()
         {
-            _actionResultService = actionResultService ?? throw new ArgumentNullException(nameof(actionResultService));
         }
 
-        public ILogAction WithReturnType(Type returnType)
+        public static ErrorResponse CreateErrorResponse()
         {
-            DetailsType = returnType;
-            return this;
+            return new ErrorResponse();
         }
 
-        public IDetailsType ForException(Type exceptionType)
+        public IDetailsType ForException<T>() where T : Exception
         {
-            ExceptionType = exceptionType;
+            ExceptionType = typeof(T);
             return this;
         }
 
@@ -63,22 +38,16 @@ namespace ExceptionAll.Dtos
             return this;
         }
 
-        public Type DetailsType { get; private set; } = typeof(InternalServerErrorDetails);
-        public string ErrorTitle { get; private set; } = "Error";
-        public Type ExceptionType { get; private set; } = typeof(Exception);
-
-        public Action<ILogger<IActionResultService>, Exception> LogAction { get; private set; } =
-            (x, e) => x.LogError(e, "ExceptionAll has caught an error has occurred");
+        public ILogAction WithReturnType<T>() where T : ProblemDetails
+        {
+            DetailsType = typeof(T);
+            return this;
+        }
 
         public IExceptionSelection WithTitle(string title)
         {
             ErrorTitle = title;
             return this;
-        }
-
-        public static ErrorResponse CreateErrorResponse(IActionResultService actionResultService)
-        {
-            return new ErrorResponse(actionResultService);
         }
     }
 }

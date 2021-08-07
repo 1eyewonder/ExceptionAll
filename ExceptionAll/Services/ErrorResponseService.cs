@@ -1,5 +1,4 @@
-﻿using ExceptionAll.Dtos;
-using ExceptionAll.Interfaces;
+﻿using ExceptionAll.Interfaces;
 using ExceptionAll.Validation;
 using FluentValidation;
 using Microsoft.Extensions.Logging;

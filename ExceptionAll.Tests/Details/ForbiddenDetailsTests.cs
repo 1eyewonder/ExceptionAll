@@ -114,7 +114,7 @@ namespace ExceptionAll.Tests.Details
         public void ExceptionContextConstructor_ShouldSuccessfullyConstruct1()
         {
             // Arrange
-            var mockActionContext = TestHelper.GetMockExceptionContext();
+            var mockActionContext = TestHelper.GetMockExceptionContext<Exception>();
 
             // Act
             var test = new ForbiddenDetails(mockActionContext.Object);
@@ -132,7 +132,7 @@ namespace ExceptionAll.Tests.Details
         public void ExceptionContextConstructor_ShouldSuccessfullyConstruct2()
         {
             // Arrange
-            var mockActionContext = TestHelper.GetMockExceptionContext();
+            var mockActionContext = TestHelper.GetMockExceptionContext<Exception>();
 
             // Act
             var test = new ForbiddenDetails(mockActionContext.Object, Title);
@@ -151,7 +151,7 @@ namespace ExceptionAll.Tests.Details
         public void ExceptionContextConstructor_ShouldSuccessfullyConstruct3()
         {
             // Arrange
-            var mockActionContext = TestHelper.GetMockExceptionContext();
+            var mockActionContext = TestHelper.GetMockExceptionContext<Exception>();
 
             // Act
             var test = new ForbiddenDetails(mockActionContext.Object, Title, Message);
@@ -170,7 +170,7 @@ namespace ExceptionAll.Tests.Details
         public void ExceptionContextConstructor_ShouldSuccessfullyConstruct4()
         {
             // Arrange
-            var mockActionContext = TestHelper.GetMockExceptionContext();
+            var mockActionContext = TestHelper.GetMockExceptionContext<Exception>();
 
             // Act
             var test = new ForbiddenDetails(mockActionContext.Object, Title, Message, _errorDetails);
