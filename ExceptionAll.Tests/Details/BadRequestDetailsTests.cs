@@ -105,6 +105,12 @@ namespace ExceptionAll.Tests.Details
 
             // Act
             var action = new Func<BadRequestDetails>(() => new BadRequestDetails(context));
+            var exception = Record.Exception(action);
+            
+            // Assess
+            TestOutputHelper.WriteLine($"Expected: {typeof(ArgumentNullException)}");
+            TestOutputHelper.WriteLine($"Actual: {exception?.GetType()}");
+            TestOutputHelper.WriteLine($"Exception: {exception.ToJson()}");
 
             // Assert
             Assert.Throws<ArgumentNullException>(action);
@@ -195,6 +201,12 @@ namespace ExceptionAll.Tests.Details
 
             // Act
             var action = new Func<BadRequestDetails>(() => new BadRequestDetails(context));
+            var exception = Record.Exception(action);
+            
+            // Assess
+            TestOutputHelper.WriteLine($"Expected: {typeof(ArgumentNullException)}");
+            TestOutputHelper.WriteLine($"Actual: {exception?.GetType()}");
+            TestOutputHelper.WriteLine($"Exception: {exception.ToJson()}");
 
             // Assert
             Assert.Throws<ArgumentNullException>(action);
