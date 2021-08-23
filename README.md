@@ -41,11 +41,11 @@ In Startup.cs under 'Configure'
                     .WithTitle("Bad Request - Fluent Validation")
                     
                     // Type of error this response handles
-                    .ForException(typeof(FluentValidation.ValidationException))
+                    .ForException<FluentValidation.ValidationException>()
                     
                     // Returned object. Must inherit from Microsoft.AspNetCore.Mvc.ProblemDetails
                     // Different 'Detail' objects are used to allow for support in Swagger documentation
-                    .WithReturnType(typeof(BadRequestDetails))
+                    .WithReturnType<BadRequestDetails>()
                     
                     // Allows developer to choose what level of logging happens for the 
                     // specific exception, if desired. If no desire to log, you don't have
