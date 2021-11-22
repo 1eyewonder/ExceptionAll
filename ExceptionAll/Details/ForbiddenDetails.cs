@@ -1,33 +1,25 @@
-﻿using System;
-using ExceptionAll.Dtos;
-using ExceptionAll.Helpers;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System.Collections.Generic;
+﻿namespace ExceptionAll.Details;
 
-namespace ExceptionAll.Details
+public class ForbiddenDetails : BaseDetails
 {
-    public class ForbiddenDetails : ProblemDetails
+    public ForbiddenDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null) :
+        base(
+        context ?? throw new ArgumentNullException(nameof(context)),
+        string.IsNullOrEmpty(title) ? "Forbidden" : title,
+        context.HttpContext.Request.Path,
+        StatusCodes.Status403Forbidden,
+        string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
+        errors)
     {
-        public ForbiddenDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
-        {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            Title = string.IsNullOrEmpty(title) == false ? title :  "Forbidden";
-            Instance = context.HttpContext.Request.Path;
-            Status = StatusCodes.Status403Forbidden;
-            Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            this.AddDefaultExtensionsFromContext(context, errors);
-        }
-
-        public ForbiddenDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
-        {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            Title = string.IsNullOrEmpty(title) == false ? title :  "Forbidden";
-            Instance = context.HttpContext.Request.Path;
-            Status = StatusCodes.Status403Forbidden;
-            Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            this.AddDefaultExtensionsFromContext(context, errors);
-        }
+    }
+    public ForbiddenDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null) :
+        base(
+        context ?? throw new ArgumentNullException(nameof(context)),
+        string.IsNullOrEmpty(title) ? "Forbidden" : title,
+        context.HttpContext.Request.Path,
+        StatusCodes.Status403Forbidden,
+        string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
+        errors)
+    {
     }
 }

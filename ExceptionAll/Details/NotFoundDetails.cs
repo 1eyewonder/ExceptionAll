@@ -1,33 +1,25 @@
-﻿using System;
-using ExceptionAll.Dtos;
-using ExceptionAll.Helpers;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System.Collections.Generic;
+﻿namespace ExceptionAll.Details;
 
-namespace ExceptionAll.Details
+public class NotFoundDetails : BaseDetails
 {
-    public class NotFoundDetails : ProblemDetails
+    public NotFoundDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null) :
+        base(
+        context ?? throw new ArgumentNullException(nameof(context)),
+        string.IsNullOrEmpty(title) ? "Not Found" : title,
+        context.HttpContext.Request.Path,
+        StatusCodes.Status404NotFound,
+        string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
+        errors)
     {
-        public NotFoundDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
-        {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            Title = string.IsNullOrEmpty(title) == false ? title :  "Not Found";
-            Instance = context.HttpContext.Request.Path;
-            Status = StatusCodes.Status404NotFound;
-            Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            this.AddDefaultExtensionsFromContext(context, errors);
-        }
-
-        public NotFoundDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null)
-        {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            Title = string.IsNullOrEmpty(title) == false ? title :  "Not Found";
-            Instance = context.HttpContext.Request.Path;
-            Status = StatusCodes.Status404NotFound;
-            Detail = string.IsNullOrEmpty(message) == false ? message : "See errors or logs for more details";
-            this.AddDefaultExtensionsFromContext(context, errors);
-        }
+    }
+    public NotFoundDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null) :
+        base(
+        context ?? throw new ArgumentNullException(nameof(context)),
+        string.IsNullOrEmpty(title) ? "Not Found" : title,
+        context.HttpContext.Request.Path,
+        StatusCodes.Status404NotFound,
+        string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
+        errors)
+    {
     }
 }
