@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
+using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -49,7 +50,7 @@ namespace ExceptionAll.Tests.Services
                 mockErrorResponseService.Object);
 
             // Act
-            var action = new Func<IActionResult>(() => actionResultService.GetResponse<ProblemDetails>(mockActionContext.Object));
+            var action = new Func<IActionResult>(() => actionResultService.GetResponse<BaseDetails>(mockActionContext.Object));
 
             // Assert
             Assert.Throws<Exception>(action);
@@ -72,8 +73,12 @@ namespace ExceptionAll.Tests.Services
             Assert.Throws<Exception>(action);
         }
 
-        private class TestDummy : ProblemDetails
+        private class TestDummy : BaseDetails
         {
+            public TestDummy(ActionContext context, string title, string instance, int? status, string details, List<ErrorDetail> errors) : 
+                base(context, title, instance, status, details, errors)
+            {
+            }
         }
 
         [Fact]
