@@ -1,39 +1,31 @@
-﻿using ExceptionAll.Dtos;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿namespace ExceptionAll.Helpers;
 
-namespace ExceptionAll.Helpers
+public static class ProblemDetailsHelper
 {
-    public static class ProblemDetailsHelper
+    public static void AddDefaultExtensionsFromContext(this BaseDetails details,
+        ActionContext context,
+        List<ErrorDetail> errors = null)
     {
-        public static void AddDefaultExtensionsFromContext(this ProblemDetails details,
-            ActionContext context,
-            List<ErrorDetail> errors = null)
+        foreach (var (key, value) in GetExtensionsFromContext(context, errors))
         {
-            foreach (var (key, value) in GetExtensionsFromContext(context, errors))
-            {
-                details.Extensions.Add(key, value);
-            }
+            details.Extensions.Add(key, value);
         }
+    }
 
-        public static void AddDefaultExtensionsFromContext(this ProblemDetails details,
-            ExceptionContext context,
-            List<ErrorDetail> errors = null)
+    public static void AddDefaultExtensionsFromContext(this BaseDetails details,
+        ExceptionContext context,
+        List<ErrorDetail> errors = null)
+    {
+        foreach (var (key, value) in GetExtensionsFromContext(context, errors))
         {
-            foreach (var (key, value) in GetExtensionsFromContext(context, errors))
-            {
-                details.Extensions.Add(key, value);
-            }
+            details.Extensions.Add(key, value);
         }
+    }
 
-        private static IDictionary<string, object> GetExtensionsFromContext(ActionContext context,
-            List<ErrorDetail> errors = null)
-        {
-            var dictionary = new Dictionary<string, object>
+    private static IDictionary<string, object> GetExtensionsFromContext(ActionContext context,
+        List<ErrorDetail> errors = null)
+    {
+        var dictionary = new Dictionary<string, object>
             {
                 {"Method", context.HttpContext.Request.Method },
                 {"QueryString", context.HttpContext.Request.QueryString.Value },
@@ -41,15 +33,15 @@ namespace ExceptionAll.Helpers
                 {"TraceId", context.HttpContext.TraceIdentifier }
             };
 
-            if (errors is null || !errors.Any()) return dictionary;
-            dictionary.Add("Errors", errors);
-            return dictionary;
-        }
+        if (errors is null || !errors.Any()) return dictionary;
+        dictionary.Add("Errors", errors);
+        return dictionary;
+    }
 
-        private static IDictionary<string, object> GetExtensionsFromContext(ExceptionContext context,
-            List<ErrorDetail> errors = null)
-        {
-            var dictionary = new Dictionary<string, object>
+    private static IDictionary<string, object> GetExtensionsFromContext(ExceptionContext context,
+        List<ErrorDetail> errors = null)
+    {
+        var dictionary = new Dictionary<string, object>
             {
                 {"Method", context.HttpContext.Request.Method },
                 {"QueryString", context.HttpContext.Request.QueryString.Value },
@@ -57,28 +49,27 @@ namespace ExceptionAll.Helpers
                 {"TraceId", context.HttpContext.TraceIdentifier }
             };
 
-            if (errors is null || !errors.Any()) return dictionary;
-            dictionary.Add("Errors", errors);
-            return dictionary;
-        }
+        if (errors is null || !errors.Any()) return dictionary;
+        dictionary.Add("Errors", errors);
+        return dictionary;
+    }
 
-        public static ConstructorInfo GetActionContextConstructor<T>()
-            where T : ProblemDetails
+    public static ConstructorInfo GetActionContextConstructor<T>()
+        where T : BaseDetails
+    {
+        try
         {
-            try
+            return typeof(T).GetConstructor(new[]
             {
-                return typeof(T).GetConstructor(new[]
-                {
                     typeof(ActionContext),
                     typeof(string),
                     typeof(string),
                     typeof(List<ErrorDetail>)
                 });
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Error creating constructor for type: {typeof(T)}", e);
-            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"Error creating constructor for type: {typeof(T)}", e);
         }
     }
 }

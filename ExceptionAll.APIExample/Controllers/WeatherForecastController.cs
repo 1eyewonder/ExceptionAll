@@ -47,6 +47,7 @@ namespace ExceptionAll.APIExample.Controllers
         public async Task<IActionResult> GetNullRefError(string param)
         {
             param = null;
+            await Task.Delay(0);
             throw new ArgumentNullException(nameof(param));
         }
 
