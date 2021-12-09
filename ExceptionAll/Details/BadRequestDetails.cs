@@ -2,24 +2,24 @@
 
 public class BadRequestDetails : BaseDetails
 {
-    public BadRequestDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null) :
+    public BadRequestDetails(ActionContext context, string? title = null, string? message = null, List<ErrorDetail>? errors = null) :
         base(
         context ?? throw new ArgumentNullException(nameof(context)),
         string.IsNullOrEmpty(title) ? "Bad Request" : title,
         context.HttpContext.Request.Path,
         StatusCodes.Status400BadRequest,
         string.IsNullOrEmpty (message) ? "See errors or logs for more details" : message,
-        errors)
+        errors ?? new List<ErrorDetail>())
     { 
     }
-    public BadRequestDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null) :
+    public BadRequestDetails(ExceptionContext context, string? title = null, string? message = null, List<ErrorDetail>? errors = null) :
         base(
         context ?? throw new ArgumentNullException(nameof(context)),
         string.IsNullOrEmpty(title) ? "Bad Request" : title,
         context.HttpContext.Request.Path,
         StatusCodes.Status400BadRequest,
         string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
-        errors)
+        errors ?? new List<ErrorDetail>())
     {
     }
 }

@@ -16,16 +16,21 @@ public class ActionResultService : IActionResultService
     {
         BaseDetails details;
         if (_errorResponseService.GetErrorResponses()
-            .TryGetValue(context.Exception.GetType(),
-            out var response))
+                                 .TryGetValue(
+                                     context.Exception.GetType(),
+                                     out var response))
         {
             new ErrorResponseValidator().ValidateAndThrow(response);
             var constructorInfo = GetExceptionContextConstructor(response.DetailsType);
 
-            details = (BaseDetails)constructorInfo.Invoke(new object[]
-            {
+            if (constructorInfo is null)
+                throw new Exception("Could not find the specified constructor");
+
+            details = (BaseDetails)constructorInfo.Invoke(
+                new object[]
+                {
                     context, response.ErrorTitle, null, null
-            });
+                });
 
             if (details.Status != null)
             {
@@ -37,7 +42,7 @@ public class ActionResultService : IActionResultService
         else
         {
             context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            details = new InternalServerErrorDetails(context, "Internal Server Error");
+            details                                 = new InternalServerErrorDetails(context, "Internal Server Error");
             Logger.LogError(context.Exception, "Error encountered when accessing resource");
         }
 
@@ -47,21 +52,27 @@ public class ActionResultService : IActionResultService
         };
     }
 
-    public IActionResult GetResponse<T>(ActionContext context, string message = null) where T : BaseDetails
+    public IActionResult GetResponse<T>(ActionContext context, string? message = null, IEnumerable<ErrorDetail>? errors = null) where T : BaseDetails
     {
         T details;
         if (!typeof(T).IsSubclassOf(typeof(BaseDetails)) &&
             typeof(T) == typeof(BaseDetails))
         {
             var e = new Exception("ProblemDetails is not an acceptable type");
-            Logger.LogError(e, "ProblemDetails is not a valid type for this class. Please refer to documentation for assistance");
+            Logger.LogError(
+                e,
+                "ProblemDetails is not a valid type for this class. Please refer to documentation for assistance");
             throw e;
         }
 
         try
         {
             var constructorInfo = ProblemDetailsHelper.GetActionContextConstructor<T>();
-            details = (T)constructorInfo.Invoke(new object[] { context, "Caught Exception", message, null });
+            if (constructorInfo is null)
+                throw new Exception("Could not find the specified constructor");
+
+            details = (T)constructorInfo.Invoke(
+                new object[] { context, "Caught Exception", message, errors?.ToList() });
         }
         catch (Exception e)
         {
@@ -79,21 +90,14 @@ public class ActionResultService : IActionResultService
         };
     }
 
-    private static ConstructorInfo GetExceptionContextConstructor(Type type)
+    private static ConstructorInfo? GetExceptionContextConstructor(Type type)
     {
-        try
+        return type.GetConstructor(new[]
         {
-            return type.GetConstructor(new[]
-            {
-                    typeof(ExceptionContext),
-                    typeof(string),
-                    typeof(string),
-                    typeof(List<ErrorDetail>)
-                });
-        }
-        catch (Exception e)
-        {
-            throw new Exception($"Error creating constructor for type: {type}", e);
-        }
+            typeof(ExceptionContext),
+            typeof(string),
+            typeof(string),
+            typeof(List<ErrorDetail>)
+        });
     }
 }

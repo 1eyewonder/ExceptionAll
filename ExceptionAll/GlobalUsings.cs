@@ -9,3 +9,4 @@ global using FluentValidation;
 global using ExceptionAll.Validation;
 global using Microsoft.Extensions.Logging;
 global using System.Reflection;
+global using Swashbuckle.AspNetCore.Filters;

@@ -18,6 +18,7 @@ public interface IActionResultService
     /// <typeparam name="T"></typeparam>
     /// <param name="context">ControllerContext</param>
     /// <param name="message">Optional developer message</param>
+    /// <param name="errors"></param>
     /// <returns></returns>
-    IActionResult GetResponse<T>(ActionContext context, string message = null) where T : BaseDetails;
+    IActionResult GetResponse<T>(ActionContext context, string? message = null, IEnumerable<ErrorDetail>? errors = null) where T : BaseDetails;
 }
