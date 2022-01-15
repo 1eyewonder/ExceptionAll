@@ -1,5 +1,4 @@
 ﻿using ExceptionAll.Details;
-using ExceptionAll.Dtos;
 using ExceptionAll.Services;
 using FluentValidation;
 using Moq;
@@ -7,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExceptionAll.Interfaces;
+using ExceptionAll.Models;
 using Microsoft.Extensions.Logging;
 using Xunit;
 using Xunit.Abstractions;

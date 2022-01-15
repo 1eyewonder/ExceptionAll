@@ -13,12 +13,15 @@ public class ErrorResponseService : IErrorResponseService
     public void AddErrorResponse(IErrorResponse response)
     {
         new ErrorResponseValidator().ValidateAndThrow(response);
+
         if (ErrorResponses.ContainsKey(response.ExceptionType))
         {
-            _logger.LogError("Cannot add response to service because an " +
-                               $"error response already exists for the exception type: {response.ExceptionType}");
-            throw new ArgumentException($"Exception type, {response.ExceptionType}, " +
-                                        "already exists in service collection");
+            _logger.LogError(
+                "Cannot add response to service because an error response already exists for the exception type: {0}",
+                response.ExceptionType);
+
+            throw new ArgumentException(
+                $"Exception type, {response.ExceptionType}, already exists in service collection");
         }
 
         ErrorResponses.Add(response.ExceptionType, response);

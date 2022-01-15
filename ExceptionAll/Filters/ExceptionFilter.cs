@@ -15,5 +15,21 @@ public class ExceptionFilter : ExceptionFilterAttribute
     public override void OnException(ExceptionContext context)
     {
         context.Result = _actionResultService.GetErrorResponse(context);
+        return;
+        /*if (context.ModelState.IsValid)
+        {
+            
+        }
+
+        var errors = new List<ErrorDetail>();
+        foreach (var (key, value) in context.ModelState)
+        {
+            errors.AddRange(value.Errors.Select(error => new ErrorDetail(key, error.ErrorMessage)));
+        }
+
+        context.Result = _actionResultService.GetResponse<BadRequestDetails>(
+            context,
+            "Invalid request model",
+            errors.Any() ? errors : null);*/
     }
 }

@@ -3,97 +3,72 @@
 public class ActionResultService : IActionResultService
 {
     private readonly IErrorResponseService _errorResponseService;
+    private readonly IContextConfigurationService _configurationService;
     private ILogger<IActionResultService> Logger { get; }
 
-    public ActionResultService(ILogger<IActionResultService> logger,
-        IErrorResponseService errorResponseService)
+    public ActionResultService(
+        ILogger<IActionResultService> logger,
+        IErrorResponseService errorResponseService,
+        IContextConfigurationService configurationService)
     {
-        Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        Logger                = logger               ?? throw new ArgumentNullException(nameof(logger));
         _errorResponseService = errorResponseService ?? throw new ArgumentNullException(nameof(errorResponseService));
+        _configurationService = configurationService ?? throw new ArgumentNullException(nameof(configurationService));
     }
 
     public IActionResult GetErrorResponse(ExceptionContext context)
     {
-        BaseDetails details;
         if (_errorResponseService.GetErrorResponses()
-            .TryGetValue(context.Exception.GetType(),
-            out var response))
+                                 .TryGetValue(
+                                     context.Exception.GetType(),
+                                     out var errorResponse))
         {
-            new ErrorResponseValidator().ValidateAndThrow(response);
-            var constructorInfo = GetExceptionContextConstructor(response.DetailsType);
-
-            details = (BaseDetails)constructorInfo.Invoke(new object[]
-            {
-                    context, response.ErrorTitle, null, null
-            });
-
-            if (details.Status != null)
-            {
-                context.HttpContext.Response.StatusCode = (int)details.Status;
-            }
-
-            response.LogAction?.Invoke(Logger, context.Exception);
+            new ErrorResponseValidator().ValidateAndThrow(errorResponse);
+            errorResponse.LogAction?.Invoke(Logger, context.Exception);
         }
         else
         {
-            context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            details = new InternalServerErrorDetails(context, "Internal Server Error");
-            Logger.LogError(context.Exception, "Error encountered when accessing resource");
+            Logger.LogInformation(
+                context.Exception,
+                "Exception type not found when accessing error response container. Please verify you have added this given exception type to your configuration: {type}",
+                context.Exception.GetType()
+                       .FullName);
         }
 
-        return new ObjectResult(details)
+        var apiResponse = new ApiErrorDetails
         {
-            StatusCode = context.HttpContext.Response.StatusCode
+            Title          = errorResponse?.ErrorTitle ?? "ExceptionAll Error",
+            StatusCode     = errorResponse?.StatusCode ?? 500,
+            Message        = errorResponse?.Message    ?? "There was an error encountered. If no errors are explicitly shown, please see logs for more details.",
+            ContextDetails = _configurationService.GetContextDetails(context.HttpContext)
+        };
+
+        context.HttpContext.Response.StatusCode = apiResponse.StatusCode;
+
+        return new ObjectResult(apiResponse)
+        {
+            StatusCode = apiResponse.StatusCode
         };
     }
 
-    public IActionResult GetResponse<T>(ActionContext context, string message = null) where T : BaseDetails
+    public IActionResult GetResponse<T>(ActionContext context, string? message = null, List<ErrorDetail>? errors = null)
+        where T : IDetailBuilder, new()
     {
-        T details;
-        if (!typeof(T).IsSubclassOf(typeof(BaseDetails)) &&
-            typeof(T) == typeof(BaseDetails))
-        {
-            var e = new Exception("ProblemDetails is not an acceptable type");
-            Logger.LogError(e, "ProblemDetails is not a valid type for this class. Please refer to documentation for assistance");
-            throw e;
-        }
+        var (statusCode, title) = new T().GetDetails();
 
-        try
+        var apiResponse = new ApiErrorDetails
         {
-            var constructorInfo = ProblemDetailsHelper.GetActionContextConstructor<T>();
-            details = (T)constructorInfo.Invoke(new object[] { context, "Caught Exception", message, null });
-        }
-        catch (Exception e)
-        {
-            Logger.LogError(e, e.Message);
-            throw new Exception("Error when trying to invoke object constructor", e);
-        }
-
-        new ProblemDetailsValidator<T>().ValidateAndThrow(details);
-        if (details.Status != null) context.HttpContext.Response.StatusCode = (int)details.Status;
-
-        Logger.LogTrace(message ?? nameof(T).Replace("Details", "").Trim());
-        return new ObjectResult(details)
-        {
-            StatusCode = details.Status
+            Title          = title,
+            StatusCode     = statusCode,
+            Message        = message ?? "There was an error encountered",
+            ContextDetails = _configurationService.GetContextDetails(context.HttpContext, errors)
         };
-    }
 
-    private static ConstructorInfo GetExceptionContextConstructor(Type type)
-    {
-        try
+        context.HttpContext.Response.StatusCode = apiResponse.StatusCode;
+
+        return new ObjectResult(apiResponse)
         {
-            return type.GetConstructor(new[]
-            {
-                    typeof(ExceptionContext),
-                    typeof(string),
-                    typeof(string),
-                    typeof(List<ErrorDetail>)
-                });
-        }
-        catch (Exception e)
-        {
-            throw new Exception($"Error creating constructor for type: {type}", e);
-        }
+            StatusCode = apiResponse.StatusCode
+        };
     }
 }

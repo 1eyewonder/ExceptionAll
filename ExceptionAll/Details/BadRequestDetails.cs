@@ -1,25 +1,14 @@
 ﻿namespace ExceptionAll.Details;
 
-public class BadRequestDetails : BaseDetails
+public class BadRequestDetails : IExceptionAllDetails
 {
-    public BadRequestDetails(ActionContext context, string title = null, string message = null, List<ErrorDetail> errors = null) :
-        base(
-        context ?? throw new ArgumentNullException(nameof(context)),
-        string.IsNullOrEmpty(title) ? "Bad Request" : title,
-        context.HttpContext.Request.Path,
-        StatusCodes.Status400BadRequest,
-        string.IsNullOrEmpty (message) ? "See errors or logs for more details" : message,
-        errors)
-    { 
-    }
-    public BadRequestDetails(ExceptionContext context, string title = null, string message = null, List<ErrorDetail> errors = null) :
-        base(
-        context ?? throw new ArgumentNullException(nameof(context)),
-        string.IsNullOrEmpty(title) ? "Bad Request" : title,
-        context.HttpContext.Request.Path,
-        StatusCodes.Status400BadRequest,
-        string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
-        errors)
+    public string Title => GetDetails().Title;
+    public int StatusCode => GetDetails().StatusCode;
+    public string Message { get; init; } = string.Empty;
+    public IReadOnlyDictionary<string, object>? ContextDetails { get; init; }
+    public (int StatusCode, string Title) GetDetails()
     {
+        return (400, "Bad Request");
     }
+
 }

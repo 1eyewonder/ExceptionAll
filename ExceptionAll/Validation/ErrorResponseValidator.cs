@@ -11,12 +11,6 @@ public class ErrorResponseValidator : AbstractValidator<IErrorResponse>
         RuleFor(x => x.ExceptionType)
             .NotNull();
 
-        RuleFor(x => x.DetailsType)
-            .Must(x => x.IsSubclassOf(typeof(BaseDetails)));
-
-        RuleFor(x => x.DetailsType)
-            .NotNull();
-
         RuleFor(x => x.ErrorTitle)
             .NotEmpty();
     }
