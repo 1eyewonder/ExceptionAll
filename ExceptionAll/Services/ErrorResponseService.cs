@@ -5,9 +5,20 @@ public class ErrorResponseService : IErrorResponseService
     private readonly ILogger<IErrorResponseService> _logger;
     private Dictionary<Type, IErrorResponse> ErrorResponses { get; } = new();
 
-    public ErrorResponseService(ILogger<IErrorResponseService> logger)
+    public ErrorResponseService(ILogger<IErrorResponseService> logger, IExceptionAllConfiguration configuration)
     {
         _logger = logger;
+
+        AddErrorResponses(configuration.ErrorResponses);
+    }
+
+    private void AddErrorResponses(List<IErrorResponse> errorResponses)
+    {
+        if (errorResponses == null || !errorResponses.Any())
+            throw new ArgumentNullException(nameof(errorResponses));
+
+        foreach (var errorResponse in errorResponses)
+            AddErrorResponse(errorResponse);
     }
 
     public void AddErrorResponse(IErrorResponse response)

@@ -32,8 +32,6 @@ builder.Services.AddSwaggerGen(
 
 var app = builder.Build();
 
-app.Services.AddExceptionAll();
-
 // Configure the HTTP request pipeline.
 
 app.UseSwagger();
