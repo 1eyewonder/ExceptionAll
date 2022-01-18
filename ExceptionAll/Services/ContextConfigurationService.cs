@@ -4,11 +4,12 @@ namespace ExceptionAll.Services;
 
 public class ContextConfigurationService : IContextConfigurationService
 {
-    private Dictionary<string, Func<HttpContext, object>>? _contextMappings;
+    private readonly Dictionary<string, Func<HttpContext, object>>? _contextMappings;
 
-    public void Configure(Dictionary<string, Func<HttpContext, object>> configuration)
+    public ContextConfigurationService(IExceptionAllConfiguration configuration)
     {
-        _contextMappings = new Dictionary<string, Func<HttpContext, object>>(configuration);
+        if (configuration.ContextConfiguration is not null)
+            _contextMappings = new(configuration.ContextConfiguration);
     }
 
     public IReadOnlyDictionary<string, object>? GetContextDetails(HttpContext context, List<ErrorDetail>? errors = null)
