@@ -1,19 +1,24 @@
 # ExceptionAll
-ExceptionAll is a library for adding structured, global error handling to Web API solutions using .NET Core. It helps reduce code noise by removing the need for 'try-catch' code blocks as well as a singluar source to configure how all exception types are handled, logged, and returned to an API consumer. The package comes with out of the box Swagger example responses to let the developer focus on the code rather than documentation. The configuration of the error responses is also done in a fluent manner, making the code more readable for developers.
+ExceptionAll is a library for adding global error handling to Web API solutions using .NET Core. Its goals are to:
+1. Reduce code noise by reducing the need for 'try-catch' blocks in code
+2. Provide a single source of responsibility for handling and maintaining API error handling logic
+3. Allow for the customization of response data and logging actions
+4. Reduce the amount of time needed to set up Swagger documentation
+
 
 ## Table of Contents
-- [ExceptionAll](#exceptionall)
   - [Table of Contents](#table-of-contents)
   - [Setup](#setup)
   - [Example Code](#example-code)
+  - [Out of the Box Return Objects](#out-of-the-box-return-objects)
   - [Extending ExceptionAll](#extending-exceptionall)
 
 ## Setup
-1. Create an ExceptionAll configuration class
+1. Create an ExceptionAll configuration class which implements the <b>IExceptionAllConfiguration</b> interface. Below are some examples various examples but are not required
    1. ErrorResponses
         - A list of the types of error responses for specific error types encountered.
    2. ContextConfiguration
-        - Allows the developer to extend the standard response object by adding details from the HttpContext. Below are some examples various examples.
+        - Allows the developer to extend the standard response object by adding details from the HttpContext. As you modify this property, your Swagger documentation should also be updated as well.
 
    ```csharp
     public class ExceptionAllConfiguration : IExceptionAllConfiguration
@@ -40,30 +45,18 @@ ExceptionAll is a library for adding structured, global error handling to Web AP
     }
    ```
 
-2. In Program.cs add the following namespaces:
-   
+2. In Program.cs:
+
     ```csharp
     using ExceptionAll.Helpers;
-    ```
 
-3. In Program.cs:
-
-    ```csharp
     builder.Services
            .AddExceptionAll<ExceptionAllConfiguration>()
-           .WithExceptionAllSwaggerExamples(); // optional, adds the Swagger response examples
-
-    // more dependency injection here
-    // ...
-
-    // the standard .NET 6 WebApplicationBuilder
-    var app = builder.Build(); 
-
-    app.Services.AddExceptionAll();
+           .WithExceptionAllSwaggerExamples(); // optional, adds the default Swagger response examples
     ```
 
 ## Example Code
-1. The standard API response
+1. The default API response provided by ExceptionAll. This simulates an uncaught exception in your API code. This response will also be returned for specific exception types not initially considered during configuration.
    1. API Controller code
    
         ```csharp
@@ -82,11 +75,11 @@ ExceptionAll is a library for adding structured, global error handling to Web AP
                 throw new Exception("This is simulating an uncaught exception");
             }
         ```
-   2. Api Response
+   2. API Response
     
         ![alt text](ReadMeImages\v4\ApiControllerStandardResponse.PNG)
 
-2. Catching an exception configured in our error response container
+2. This example shows catching an exception configured in the configuration class. (See above configuration code)
    1. API Controller code
    
         ```csharp
@@ -99,11 +92,11 @@ ExceptionAll is a library for adding structured, global error handling to Web AP
                 throw new ArgumentNullException(nameof(param));
             }
         ```
-    2. API Response. Matches what we see in our setup seen further up on the page.
+    1. API Response. The properties match what we see in our configuration, seen further up on the page.
 
         ![alt text](ReadMeImages\v4\ArgumentNullRefResponse.PNG)
 
-3. Getting around ExceptionAll, since you might have special cases you don't want to see its responses
+3. There may be times where an ExceptionAll response is undesired. To get a non-ExceptionAll response, just wrap the controller/endpoint code with a standard 'try-catch' block and return the new, desired object.
    1. API Controller code
    ```csharp
     [HttpGet]
@@ -122,16 +115,86 @@ ExceptionAll is a library for adding structured, global error handling to Web AP
         }
     }
    ```
-   2. API Response
+   1. API Response
    
         ![alt text](ReadMeImages\v4\NonExceptionAllResponse.PNG)
 
-4. Manual response generation, for times developers want to return caught exceptions
+4. This example covers manual response generation, for times developers want to return caught exceptions with a special message and/or a surface list of errors to the user
    1. API Controller code
+      1. Make sure to inject the 'IActionResultService' into your controller constructor
+
+    ```csharp
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,
+            IActionResultService actionResultService)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _actionResultService = actionResultService ?? throw new ArgumentNullException(nameof(actionResultService));
+        }
+
+        [HttpGet]
+        [Route("api/GetSomething")]
+        public async Task<IActionResult> GetSomethingWithQuery([FromQuery] string test)
+        {
+            await Task.Delay(0);
+
+            var errors = new List<ErrorDetail>
+            {
+                new("Error #1", "Something wrong happened here"),
+                new("Error #2", "Something wrong happened there")
+            };
+
+            return _actionResultService.GetResponse<NotFoundDetails>(
+                ControllerContext,
+                $"No item exists with name of {test}",
+                errors);
+        }
+    ```
+    1. API Response
+   ![alt text](ReadMeImages\v4\ManuallyReturnedResponse.PNG)
+
+## Out of the Box Return Objects
+
+The following objects are provided out of the box to provided to handle common API errors as well as give Swagger documentation examples.
+1. BadGatewayDetails
+2. BadRequestDetails
+3. ForbiddenDetails
+4. InternalServerErrorDetails
+5. NotFoundDetails
+6. TooManyRequestDetails
+7. UnauthorizedDetails
+
+In order to provide the Swagger examples, add attributes with the return object as well as the HTTP status codes your endpoint handles.
+
+```csharp
+    [HttpGet]
+    [Route("api/GetSomething")]
+    [ProducesResponseType(typeof(BadRequestDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(NotFoundDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(InternalServerErrorDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetSomethingWithQuery([FromQuery] string test)
+    {
+        await Task.Delay(0);
+
+        var errors = new List<ErrorDetail>
+        {
+            new("Error #1", "Something wrong happened here"),
+            new("Error #2", "Something wrong happened there")
+        };
+
+        return _actionResultService.GetResponse<NotFoundDetails>(
+            ControllerContext,
+            $"No item exists with name of {test}",
+            errors);
+    }
+```
+
+The above code should give you the following Swagger response examples:
+
+![alt text](ReadMeImages\v4\SwaggerExamples.PNG)
 
 ## Extending ExceptionAll
-ExceptionAll provides some standard detail objects out of the box, one of which is shown below. If you as a developer need to extend the library
-and create additional detail types, follow the below example as a template and implement the IExceptionAllDetails interface on your custom object. The main reason for needing to create your own details is for swagger response object documentation.
+ExceptionAll provides some standard detail objects out of the box, one of which is shown below. If you, as a developer, need to extend the library
+and create additional detail types, follow the below example as a template and implement the IExceptionAllDetails interface on your custom object.
 
 ```csharp
 
@@ -148,3 +211,30 @@ public class BadGatewayDetails : IExceptionAllDetails
 }
 ```
 
+To create a Swagger response example for the new object, create a class similar to the following. Utilize unit test libraries to mock a more detailed HttpContext, if desired.
+
+```csharp
+public class BadGatewayDetailsExample : IExamplesProvider<BadGatewayDetails>
+{
+    private readonly IContextConfigurationService _contextConfigurationService;
+
+    public BadGatewayDetailsExample(IContextConfigurationService contextConfigurationService)
+    {
+        _contextConfigurationService = contextConfigurationService;
+    }
+
+    public BadGatewayDetails GetExamples()
+    {
+        return new BadGatewayDetails()
+        {
+            Message = "Oops, there was an error",
+            ContextDetails = _contextConfigurationService.GetContextDetails(
+                new DefaultHttpContext(),
+                new List<ErrorDetail>
+                {
+                    new("Error!", "Something broke")
+                })
+        };
+    }
+}
+```

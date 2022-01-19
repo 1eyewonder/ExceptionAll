@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Examples;
+﻿namespace ExceptionAll.Examples;
 
 public class BadGatewayDetailsExample : IExamplesProvider<BadGatewayDetails>
 {
@@ -8,7 +6,7 @@ public class BadGatewayDetailsExample : IExamplesProvider<BadGatewayDetails>
 
     public BadGatewayDetailsExample(IContextConfigurationService contextConfigurationService)
     {
-        _contextConfigurationService = contextConfigurationService ?? throw new ArgumentNullException(nameof(contextConfigurationService));
+        _contextConfigurationService = contextConfigurationService;
     }
 
     public BadGatewayDetails GetExamples()

@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Examples;
+﻿namespace ExceptionAll.Examples;
 
 public class NotFoundDetailsExample : IExamplesProvider<NotFoundDetails>
 {
@@ -8,14 +6,14 @@ public class NotFoundDetailsExample : IExamplesProvider<NotFoundDetails>
 
     public NotFoundDetailsExample(IContextConfigurationService contextConfigurationService)
     {
-        _contextConfigurationService = contextConfigurationService ?? throw new ArgumentNullException(nameof(contextConfigurationService));
+        _contextConfigurationService = contextConfigurationService;
     }
 
     public NotFoundDetails GetExamples()
     {
         return new NotFoundDetails()
         {
-            Message    = "Oops, there was an error",
+            Message = "Oops, there was an error",
             ContextDetails = _contextConfigurationService.GetContextDetails(
                 new DefaultHttpContext(),
                 new List<ErrorDetail>

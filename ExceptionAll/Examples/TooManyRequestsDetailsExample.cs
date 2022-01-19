@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Examples;
+﻿namespace ExceptionAll.Examples;
 
 public class TooManyRequestsDetailsExample : IExamplesProvider<TooManyRequestsDetails>
 {
@@ -8,7 +6,7 @@ public class TooManyRequestsDetailsExample : IExamplesProvider<TooManyRequestsDe
 
     public TooManyRequestsDetailsExample(IContextConfigurationService contextConfigurationService)
     {
-        _contextConfigurationService = contextConfigurationService ?? throw new ArgumentNullException(nameof(contextConfigurationService));
+        _contextConfigurationService = contextConfigurationService;
     }
 
     public TooManyRequestsDetails GetExamples()

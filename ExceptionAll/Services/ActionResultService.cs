@@ -11,22 +11,16 @@ public class ActionResultService : IActionResultService
         IErrorResponseService errorResponseService,
         IContextConfigurationService configurationService)
     {
-        Logger                = logger               ?? throw new ArgumentNullException(nameof(logger));
-        _errorResponseService = errorResponseService ?? throw new ArgumentNullException(nameof(errorResponseService));
-        _configurationService = configurationService ?? throw new ArgumentNullException(nameof(configurationService));
+        Logger                = logger;
+        _errorResponseService = errorResponseService;
+        _configurationService = configurationService;
     }
 
     public IActionResult GetErrorResponse(ExceptionContext context)
     {
-        if (_errorResponseService.GetErrorResponses()
-                                 .TryGetValue(
-                                     context.Exception.GetType(),
-                                     out var errorResponse))
-        {
-            new ErrorResponseValidator().ValidateAndThrow(errorResponse);
-            errorResponse.LogAction?.Invoke(Logger, context.Exception);
-        }
-        else
+        var errorResponse = _errorResponseService.GetErrorResponse(context.Exception);
+
+        if (errorResponse is null)
         {
             Logger.LogInformation(
                 context.Exception,
@@ -43,6 +37,7 @@ public class ActionResultService : IActionResultService
             ContextDetails = _configurationService.GetContextDetails(context.HttpContext)
         };
 
+        errorResponse?.LogAction?.Invoke(Logger, context.Exception);
         context.HttpContext.Response.StatusCode = apiResponse.StatusCode;
 
         return new ObjectResult(apiResponse)

@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Services;
+﻿namespace ExceptionAll.Services;
 
 public class ContextConfigurationService : IContextConfigurationService
 {

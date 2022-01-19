@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Examples;
+﻿namespace ExceptionAll.Examples;
 
 public class ForbiddenDetailsExample : IExamplesProvider<ForbiddenDetails>
 {
@@ -8,11 +6,11 @@ public class ForbiddenDetailsExample : IExamplesProvider<ForbiddenDetails>
 
     public ForbiddenDetailsExample(IContextConfigurationService contextConfigurationService)
     {
-        _contextConfigurationService = contextConfigurationService ?? throw new ArgumentNullException(nameof(contextConfigurationService));
+        _contextConfigurationService = contextConfigurationService;
     }
     public ForbiddenDetails GetExamples()
     {
-        return new  ForbiddenDetails()
+        return new ForbiddenDetails()
         {
             Message = "Oops, there was an error",
             ContextDetails = _contextConfigurationService.GetContextDetails(

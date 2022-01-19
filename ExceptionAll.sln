@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionAll", "ExceptionAl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionAll.APIExample", "ExceptionAll.APIExample\ExceptionAll.APIExample.csproj", "{260C4AB3-B883-496C-9DDB-15BDF4D438D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionAll.Tests.Unit", "ExceptionAll.Tests.Unit\ExceptionAll.Tests.Unit.csproj", "{1DC929F1-BC29-47CF-B628-C99D39FA4023}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionAll.Tests.EndToEnd", "ExceptionAll.Tests.EndToEnd\ExceptionAll.Tests.EndToEnd.csproj", "{A22AF9F9-DEA8-4F7B-9ACD-B9D6FA79714E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,14 +21,6 @@ Global
 		{260C4AB3-B883-496C-9DDB-15BDF4D438D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{260C4AB3-B883-496C-9DDB-15BDF4D438D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{260C4AB3-B883-496C-9DDB-15BDF4D438D8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1DC929F1-BC29-47CF-B628-C99D39FA4023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1DC929F1-BC29-47CF-B628-C99D39FA4023}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1DC929F1-BC29-47CF-B628-C99D39FA4023}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1DC929F1-BC29-47CF-B628-C99D39FA4023}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A22AF9F9-DEA8-4F7B-9ACD-B9D6FA79714E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A22AF9F9-DEA8-4F7B-9ACD-B9D6FA79714E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A22AF9F9-DEA8-4F7B-9ACD-B9D6FA79714E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A22AF9F9-DEA8-4F7B-9ACD-B9D6FA79714E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Examples;
+﻿namespace ExceptionAll.Examples;
 
 public class UnauthorizedDetailsExample : IExamplesProvider<UnauthorizedDetails>
 {
@@ -8,7 +6,7 @@ public class UnauthorizedDetailsExample : IExamplesProvider<UnauthorizedDetails>
 
     public UnauthorizedDetailsExample(IContextConfigurationService contextConfigurationService)
     {
-        _contextConfigurationService = contextConfigurationService ?? throw new ArgumentNullException(nameof(contextConfigurationService));
+        _contextConfigurationService = contextConfigurationService;
     }
 
     public UnauthorizedDetails GetExamples()

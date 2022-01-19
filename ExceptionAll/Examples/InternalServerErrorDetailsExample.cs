@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Examples;
+﻿namespace ExceptionAll.Examples;
 
 public class InternalServerErrorDetailsExample : IExamplesProvider<InternalServerErrorDetails>
 {
@@ -8,14 +6,14 @@ public class InternalServerErrorDetailsExample : IExamplesProvider<InternalServe
 
     public InternalServerErrorDetailsExample(IContextConfigurationService contextConfigurationService)
     {
-        _contextConfigurationService = contextConfigurationService ?? throw new ArgumentNullException(nameof(contextConfigurationService));
+        _contextConfigurationService = contextConfigurationService;
     }
 
     public InternalServerErrorDetails GetExamples()
     {
         return new InternalServerErrorDetails()
         {
-            Message    = "Oops, there was an error",
+            Message = "Oops, there was an error",
             ContextDetails = _contextConfigurationService.GetContextDetails(
                 new DefaultHttpContext(),
                 new List<ErrorDetail>

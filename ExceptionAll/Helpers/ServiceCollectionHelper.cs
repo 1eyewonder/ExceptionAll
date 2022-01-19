@@ -3,7 +3,7 @@
 public static class ServiceCollectionHelper
 {
     /// <summary>
-    /// Inject all ExceptionAll related services into the IServiceCollection
+    /// Inject all ExceptionAll related services into the IServiceCollection. Assembly scans for the class implementation of IExceptionAllConfiguration
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
@@ -43,21 +43,6 @@ public static class ServiceCollectionHelper
             });
 
         return services;
-    }
-
-    /// <summary>
-    /// Assembly scans for the class implementation of IExceptionAllConfiguration
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="services"></param>
-    /// <returns></returns>
-    public static IServiceCollection WithConfigurationInAssemblyOf<T>(this IServiceCollection services) where T : class
-    {
-        return services.Scan(
-            x => x.FromAssemblyOf<T>()
-                  .AddClasses(c => c.AssignableTo<IExceptionAllConfiguration>())
-                  .AsImplementedInterfaces()
-                  .WithSingletonLifetime());
     }
 
     /// <summary>
