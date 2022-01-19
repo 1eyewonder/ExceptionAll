@@ -77,7 +77,7 @@ ExceptionAll is a library for adding global error handling to Web API solutions 
         ```
    2. API Response
     
-        ![alt text](ReadMeImages\v4\ApiControllerStandardResponse.PNG)
+        ![ScreenShot](/ReadMeImages/v4/ApiControllerStandardResponse.PNG)
 
 2. This example shows catching an exception configured in the configuration class. (See above configuration code)
    1. API Controller code
@@ -94,7 +94,7 @@ ExceptionAll is a library for adding global error handling to Web API solutions 
         ```
     1. API Response. The properties match what we see in our configuration, seen further up on the page.
 
-        ![alt text](ReadMeImages\v4\ArgumentNullRefResponse.PNG)
+        ![ScreenShot](/ReadMeImages/v4/ArgumentNullRefResponse.PNG)
 
 3. There may be times where an ExceptionAll response is undesired. To get a non-ExceptionAll response, just wrap the controller/endpoint code with a standard 'try-catch' block and return the new, desired object.
    1. API Controller code
@@ -117,7 +117,7 @@ ExceptionAll is a library for adding global error handling to Web API solutions 
    ```
    1. API Response
    
-        ![alt text](ReadMeImages\v4\NonExceptionAllResponse.PNG)
+        ![ScreenShot](/ReadMeImages/v4/NonExceptionAllResponse.PNG)
 
 4. This example covers manual response generation, for times developers want to return caught exceptions with a special message and/or a surface list of errors to the user
    1. API Controller code
@@ -150,7 +150,7 @@ ExceptionAll is a library for adding global error handling to Web API solutions 
         }
     ```
     1. API Response
-   ![alt text](ReadMeImages\v4\ManuallyReturnedResponse.PNG)
+   ![ScreenShot](/ReadMeImages/v4/ManuallyReturnedResponse.PNG)
 
 ## Out of the Box Return Objects
 
@@ -190,7 +190,7 @@ In order to provide the Swagger examples, add attributes with the return object 
 
 The above code should give you the following Swagger response examples:
 
-![alt text](ReadMeImages\v4\SwaggerExamples.PNG)
+![ScreenShot](/ReadMeImages/v4/SwaggerExamples.PNG)
 
 ## Extending ExceptionAll
 ExceptionAll provides some standard detail objects out of the box, one of which is shown below. If you, as a developer, need to extend the library
