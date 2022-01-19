@@ -1,7 +1,7 @@
-﻿using ExceptionAll.Dtos;
-using ExceptionAll.Validation;
+﻿using ExceptionAll.Validation;
 using System.Collections.Generic;
 using System.Linq;
+using ExceptionAll.Models;
 using Xunit;
 using Xunit.Abstractions;
 

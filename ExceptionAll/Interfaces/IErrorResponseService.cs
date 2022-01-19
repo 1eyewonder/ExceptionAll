@@ -1,24 +1,14 @@
-﻿using ExceptionAll.Dtos;
-using System;
-using System.Collections.Generic;
+﻿namespace ExceptionAll.Interfaces;
 
-namespace ExceptionAll.Interfaces
+/// <summary>
+/// Service for managing global error responses
+/// </summary>
+public interface IErrorResponseService
 {
     /// <summary>
-    /// Service for managing global error responses
+    /// Returns the error response created for the given exception type
     /// </summary>
-    public interface IErrorResponseService
-    {
-        /// <summary>
-        /// Add a standard error response for a specific exception type
-        /// </summary>
-        /// <param name="response"></param>
-        void AddErrorResponse(IErrorResponse response);
-
-        /// <summary>
-        /// Return all error responses in the current collection
-        /// </summary>
-        /// <returns></returns>
-        Dictionary<Type, IErrorResponse> GetErrorResponses();
-    }
+    /// <param name="exception"></param>
+    /// <returns></returns>
+    IErrorResponse? GetErrorResponse<T>(T exception) where T : Exception;
 }

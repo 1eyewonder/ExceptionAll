@@ -1,25 +1,13 @@
 ﻿namespace ExceptionAll.Details;
 
-public class UnauthorizedDetails : BaseDetails
+public class UnauthorizedDetails : IExceptionAllDetails
 {
-    public UnauthorizedDetails(ActionContext context, string? title = null, string? message = null, List<ErrorDetail>? errors = null) :
-        base(
-        context ?? throw new ArgumentNullException(nameof(context)),
-        string.IsNullOrEmpty(title) ? "Unauthorized" : title,
-        context.HttpContext.Request.Path,
-        StatusCodes.Status401Unauthorized,
-        string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
-        errors ?? new List<ErrorDetail>())
+    public string Title => GetDetails().Title;
+    public int StatusCode => GetDetails().StatusCode;
+    public string Message { get; init; } = string.Empty;
+    public IReadOnlyDictionary<string, object>? ContextDetails { get; init; }
+    public (int StatusCode, string Title) GetDetails()
     {
-    }
-    public UnauthorizedDetails(ExceptionContext context, string? title = null, string? message = null, List<ErrorDetail>? errors = null) :
-        base(
-        context ?? throw new ArgumentNullException(nameof(context)),
-        string.IsNullOrEmpty(title) ? "Unauthorized" : title,
-        context.HttpContext.Request.Path,
-        StatusCodes.Status401Unauthorized,
-        string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
-        errors ?? new List<ErrorDetail>())
-    {
+        return (401, "Unauthorized");
     }
 }

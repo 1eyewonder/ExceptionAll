@@ -1,41 +1,57 @@
-﻿using ExceptionAll.Filters;
-using ExceptionAll.Services;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ExceptionAll.Helpers;
+﻿namespace ExceptionAll.Helpers;
 
 public static class ServiceCollectionHelper
 {
     /// <summary>
-    /// Inject all ExceptionAll related services into the IServiceCollection
+    /// Inject all ExceptionAll related services into the IServiceCollection. Assembly scans for the class implementation of IExceptionAllConfiguration
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IMvcBuilder AddExceptionAll(this IServiceCollection services)
+    public static IServiceCollection AddExceptionAll<T>(this IServiceCollection services) where T : class, IExceptionAllConfiguration
     {
-        services.AddSingleton<IErrorResponseService, ErrorResponseService>();
         services.AddSingleton<IActionResultService, ActionResultService>();
 
-        return services.AddMvc(options =>
-        {
-            options.Filters.Add<ExceptionFilter>();
-        });
+        services.Scan(
+            x => x.FromAssemblyOf<T>()
+                  .AddClasses(c => c.AssignableTo<IExceptionAllConfiguration>())
+                  .AsImplementedInterfaces()
+                  .WithSingletonLifetime());
+
+        services.AddSingleton<IContextConfigurationService, ContextConfigurationService>();
+        services.AddSingleton<IErrorResponseService, ErrorResponseService>();
+
+        // Adds an exception filter to
+        services.AddMvc(options => { options.Filters.Add<ExceptionFilter>(); });
+
+        // Removes the default response from being returned on validation error
+        services.AddOptions<ApiBehaviorOptions>()
+            .Configure<IActionResultService>((options, ars) =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = new List<ErrorDetail>();
+                    foreach (var (key, value) in context.ModelState)
+                    {
+                        errors.AddRange(value.Errors.Select(error => new ErrorDetail(key, error.ErrorMessage)));
+                    }
+
+                    return ars.GetResponse<BadRequestDetails>(
+                        context,
+                        "Invalid request model",
+                        errors.Any() ? errors : null);
+                };
+            });
+
+        return services;
     }
 
     /// <summary>
-    /// Add all error responses into the response collection
+    /// Adds ExceptionAll's out of the box, default Swagger example providers
     /// </summary>
-    /// <param name="service"></param>
-    /// <param name="errorResponses"></param>
-    public static void AddErrorResponses(this IErrorResponseService service,
-        List<IErrorResponse> errorResponses)
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection WithExceptionAllSwaggerExamples(this IServiceCollection services)
     {
-        if (errorResponses == null || !errorResponses.Any())
-            throw new ArgumentNullException(nameof(errorResponses));
-
-        foreach (var errorResponse in errorResponses)
-        {
-            service.AddErrorResponse(errorResponse);
-        }
+        return services.AddSwaggerExamplesFromAssemblyOf<BadRequestDetailsExample>();
     }
 }

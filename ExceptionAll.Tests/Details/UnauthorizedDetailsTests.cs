@@ -1,7 +1,7 @@
 ﻿using System;
 using ExceptionAll.Details;
-using ExceptionAll.Dtos;
 using System.Collections.Generic;
+using ExceptionAll.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Xunit;

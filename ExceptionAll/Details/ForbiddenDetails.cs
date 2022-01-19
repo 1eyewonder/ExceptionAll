@@ -1,25 +1,13 @@
 ﻿namespace ExceptionAll.Details;
 
-public class ForbiddenDetails : BaseDetails
+public class ForbiddenDetails : IExceptionAllDetails
 {
-    public ForbiddenDetails(ActionContext context, string? title = null, string? message = null, List<ErrorDetail>? errors = null) :
-        base(
-        context ?? throw new ArgumentNullException(nameof(context)),
-        string.IsNullOrEmpty(title) ? "Forbidden" : title,
-        context.HttpContext.Request.Path,
-        StatusCodes.Status403Forbidden,
-        string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
-        errors ?? new List<ErrorDetail>())
+    public string Title => GetDetails().Title;
+    public int StatusCode => GetDetails().StatusCode;
+    public string Message { get; init; } = string.Empty;
+    public IReadOnlyDictionary<string, object>? ContextDetails { get; init; }
+    public (int StatusCode, string Title) GetDetails()
     {
-    }
-    public ForbiddenDetails(ExceptionContext context, string? title = null, string? message = null, List<ErrorDetail>? errors = null) :
-        base(
-        context ?? throw new ArgumentNullException(nameof(context)),
-        string.IsNullOrEmpty(title) ? "Forbidden" : title,
-        context.HttpContext.Request.Path,
-        StatusCodes.Status403Forbidden,
-        string.IsNullOrEmpty(message) ? "See errors or logs for more details" : message,
-        errors ?? new List<ErrorDetail>())
-    {
+        return (403, "Forbidden");
     }
 }

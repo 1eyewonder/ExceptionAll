@@ -1,4 +1,6 @@
-﻿namespace ExceptionAll.Interfaces;
+﻿using ExceptionAll.Models;
+
+namespace ExceptionAll.Interfaces;
 
 /// <summary>
 /// Service for creating and returning standard IActionResult error objects
@@ -6,19 +8,20 @@
 public interface IActionResultService
 {
     /// <summary>
-    /// Create an error response for a filter-caught exception
+    /// Create an error response for a filter-caught exceptions
     /// </summary>
     /// <param name="context">Exception context</param>
     /// <returns></returns>
     IActionResult GetErrorResponse(ExceptionContext context);
 
     /// <summary>
-    /// Manually create an error response
+    /// Manually create an error response for developer caught errors
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="context">ControllerContext</param>
-    /// <param name="message">Optional developer message</param>
+    /// <param name="context"></param>
+    /// <param name="message"></param>
     /// <param name="errors"></param>
     /// <returns></returns>
-    IActionResult GetResponse<T>(ActionContext context, string? message = null, IEnumerable<ErrorDetail>? errors = null) where T : BaseDetails;
+    IActionResult GetResponse<T>(
+        ActionContext context, string? message = null, List<ErrorDetail>? errors = null)
+        where T : IDetailBuilder, new();
 }
