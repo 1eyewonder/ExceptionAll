@@ -1,0 +1,110 @@
+﻿@page "/"
+@using ExceptionAll.Abstractions.Models
+@using Example.Shared
+@using ExceptionAll.Client.Exceptions
+@using ExceptionAll.Client.Interfaces
+@inject IExceptionAllClientFactory _exceptionAllClientFactory
+
+<PageTitle>Index</PageTitle>
+
+<button @onclick="@Endpoint1">Endpoint 1</button>
+<button @onclick="@Endpoint2">Endpoint 2</button>
+<button @onclick="@Endpoint3">Endpoint 3</button>
+<button @onclick="@Endpoint4">Endpoint 4</button>
+
+<br/>
+
+<h1>Error Details</h1>
+<br/>
+@if (_errorDetails != null)
+{
+    <h2>Title: @_errorDetails.Title</h2> <br/>
+    <h2>Message: @_errorDetails.Message</h2> <br/>
+    <h2>StatusCode: @_errorDetails.StatusCode</h2> 
+    <br/>
+    @foreach (var detail in _errorDetails.ContextDetails)
+    {
+        <h2>@detail.Key: @detail.Value</h2>
+        <br/>
+    }
+}
+
+<h1>Forecast</h1>
+<br/>
+@if (_forecasts != null)
+{
+    @foreach (var forecast in _forecasts)
+    {
+        <h2>@forecast.Summary</h2> <br/>
+    }
+}
+
+@code
+{
+    private ApiErrorDetails? _errorDetails;
+    private WeatherForecast[]? _forecasts;
+    private IExceptionAllClient _exceptionAllClient;
+    private IExceptionAllClient _clientWithHeader;
+
+    protected override void OnInitialized()
+    {
+        _exceptionAllClient = _exceptionAllClientFactory.CreateClient();
+        _clientWithHeader = _exceptionAllClientFactory.CreateClient("Test");
+    }
+
+    private async Task Endpoint1()
+    {
+        try
+        {
+            _forecasts = await _exceptionAllClient.GetContentAsync<WeatherForecast[]>("https://localhost:44304/WeatherForecast");
+            _errorDetails = null;
+        }
+        catch (ExceptionAllException e)
+        {
+            _errorDetails = e.ErrorDetails;
+            _forecasts = null;
+        }
+    }
+
+    private async Task Endpoint2()
+    {
+        try
+        {
+            _forecasts = await _exceptionAllClient.GetContentAsync<WeatherForecast[]>("https://localhost:44304/WeatherForecast/api/GetNullRefError?param=1");
+            _errorDetails = null;
+        }
+        catch (ExceptionAllException e)
+        {
+            _errorDetails = e.ErrorDetails;
+            _forecasts = null;
+        }
+    }
+
+    private async Task Endpoint3()
+    {
+        try
+        {
+            _forecasts = await _clientWithHeader.GetContentAsync<WeatherForecast[]>("https://localhost:44304/WeatherForecast/api/GetSomething?test=123");
+            _errorDetails = null;
+        }
+        catch (ExceptionAllException e)
+        {
+            _errorDetails = e.ErrorDetails;
+            _forecasts = null;
+        }
+    }
+
+    private async Task Endpoint4()
+    {
+        try
+        {
+            _forecasts = await _clientWithHeader.GetContentAsync<WeatherForecast[]>("https://localhost:44304/WeatherForecast/api/success");
+            _errorDetails = null;
+        }
+        catch (ExceptionAllException e)
+        {
+            _errorDetails = e.ErrorDetails;
+            _forecasts = null;
+        }
+    }
+}

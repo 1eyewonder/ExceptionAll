@@ -1,16 +1,11 @@
-﻿using ExceptionAll.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
+using Example.Shared;
 using ExceptionAll.Abstractions.Details;
 using ExceptionAll.Abstractions.Models;
+using ExceptionAll.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ExceptionAll.APIExample.Controllers;
+namespace Example.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -29,6 +24,22 @@ public class WeatherForecastController : ControllerBase
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _actionResultService = actionResultService ?? throw new ArgumentNullException(nameof(actionResultService));
+    }
+
+    [HttpGet("api/success")]
+    public async Task<IActionResult> GetAllSuccess()
+    {
+        await Task.Delay(0);
+        var rng = new Random();
+        var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+                               {
+                                   Date         = DateTime.Now.AddDays(index),
+                                   TemperatureC = rng.Next(-20, 55),
+                                   Summary      = Summaries[rng.Next(Summaries.Length)]
+                               })
+                               .ToArray();
+
+        return Ok(result);
     }
 
     [HttpGet]
