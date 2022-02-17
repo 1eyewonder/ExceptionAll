@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ExceptionAll.Client\ExceptionAll.Client.csproj" />
     <ProjectReference Include="..\..\src\ExceptionAll.Abstractions\ExceptionAll.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\ExceptionAll.Client\ExceptionAll.Client.csproj" />
     <ProjectReference Include="..\Shared\Example.Shared.csproj" />
   </ItemGroup>
 

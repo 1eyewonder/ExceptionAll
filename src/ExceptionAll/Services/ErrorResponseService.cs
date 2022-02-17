@@ -8,7 +8,6 @@ public class ErrorResponseService : IErrorResponseService
     public ErrorResponseService(ILogger<IErrorResponseService> logger, IExceptionAllConfiguration configuration)
     {
         _logger = logger;
-
         AddErrorResponses(configuration.ErrorResponses);
     }
 

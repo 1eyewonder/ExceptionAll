@@ -24,14 +24,4 @@ public interface IActionResultService
     IActionResult GetResponse<T>(
         ActionContext context, string? message = null, List<ErrorDetail>? errors = null)
         where T : IDetailBuilder, new();
-
-    /// <summary>
-    /// Manually create an error response for developer caught exceptions
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="context"></param>
-    /// <param name="details"></param>
-    /// <returns></returns>
-    IActionResult GetResponse(
-        ActionContext context, ApiErrorDetails details);
 }

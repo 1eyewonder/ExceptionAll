@@ -8,7 +8,7 @@
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Global Exception Handling</PackageTags>
     <Description>Library for adding global error handling to .NET Core Web API solutions.</Description>
-    <Copyright>2021</Copyright>
+    <Copyright>2022</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <Authors>Bronson Bata</Authors>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>

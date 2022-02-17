@@ -9,7 +9,7 @@ public class ExceptionFilter : ExceptionFilterAttribute
 
     public ExceptionFilter(IActionResultService actionResultService)
     {
-        _actionResultService = actionResultService ?? throw new ArgumentNullException(nameof(actionResultService));
+        _actionResultService = actionResultService;
     }
 
     public override void OnException(ExceptionContext context)

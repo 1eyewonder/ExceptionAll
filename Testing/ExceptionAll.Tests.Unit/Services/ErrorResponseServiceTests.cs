@@ -9,49 +9,43 @@ public class ErrorResponseServiceTests
         _testOutputHelper = testOutputHelper;
     }
 
-    /*[Theory, MemberData(nameof(GetValidErrorResponses))]
+    [Theory, MemberData(nameof(GetValidErrorResponses))]
     public void AddErrorResponse_ShouldSuccessfullyAdd_WhenResponseDoesNotExistInContainerYet(ErrorResponse response)
     {
         // Arrange
         var errorResponseLogger = Substitute.For<ILogger<IErrorResponseService>>();
-        var sut = new ErrorResponseService(errorResponseLogger);
+        var configuration       = Substitute.For<IExceptionAllConfiguration>();
+        configuration.ErrorResponses.Returns(new List<IErrorResponse>() { response });
 
         // Act
-        sut.AddErrorResponse(response);
+        var exception = Record.Exception(() => new ErrorResponseService(errorResponseLogger, configuration));
 
         // Assess
         _testOutputHelper.WriteLine($"Error Response: {response.ToJson()}");
+        _testOutputHelper.WriteLine($"No exception expected. Exception message: {exception?.Message}");
 
         // Act
-        Assert.NotNull(sut.GetErrorResponse());
-        Assert.NotEmpty(sut.GetErrorResponse());
+        Assert.Null(exception);
     }
 
-    [Fact]
-    public void AddErrorResponse_WithExistingResponse_ShouldThrow()
+    [Theory, MemberData(nameof(GetValidErrorResponses))]
+    public void AddErrorResponse_WithDuplicateResponses_ShouldThrow(ErrorResponse response)
     {
         // Arrange
         var errorResponseLogger = Substitute.For<ILogger<IErrorResponseService>>();
-        var sut                 = new ErrorResponseService(errorResponseLogger);
-
-        var response = ErrorResponse.CreateErrorResponse()
-                                    .WithTitle("Test")
-                                    .WithStatusCode(400)
-                                    .WithMessage("Model error")
-                                    .ForException<ValidationException>()
-                                    .WithLogAction((x, e) => x.LogInformation(e, "There was a model error"));
-        sut.AddErrorResponse(response);
+        var configuration       = Substitute.For<IExceptionAllConfiguration>();
+        configuration.ErrorResponses.Returns(new List<IErrorResponse>() { response, response });
 
         // Act
-        var exception = Record.Exception(() => sut.AddErrorResponse(response));
+        var exception = Record.Exception(() => new ErrorResponseService(errorResponseLogger, configuration));
 
         // Assess
         _testOutputHelper.WriteLine($"Error Response: {response.ToJson()}");
-        _testOutputHelper.WriteLine($"Exception: {exception.Message}");
+        _testOutputHelper.WriteLine($"Exception expected. Exception message: {exception?.Message}");
 
         // Act
         Assert.NotNull(exception);
-    }*/
+    }
 
     public static IEnumerable<object[]> GetValidErrorResponses()
     {

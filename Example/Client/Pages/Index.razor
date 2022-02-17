@@ -20,7 +20,7 @@
 {
     <h2>Title: @_errorDetails.Title</h2> <br/>
     <h2>Message: @_errorDetails.Message</h2> <br/>
-    <h2>StatusCode: @_errorDetails.StatusCode</h2> 
+    <h2>StatusCode: @_errorDetails.StatusCode.ToString()</h2> 
     <br/>
     @foreach (var detail in _errorDetails.ContextDetails)
     {

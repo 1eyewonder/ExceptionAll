@@ -23,11 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Helpers\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExceptionAll\ExceptionAll.csproj" />
+    <ProjectReference Include="..\..\src\ExceptionAll.Abstractions\ExceptionAll.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\ExceptionAll\ExceptionAll.csproj" />
   </ItemGroup>
 
 </Project>

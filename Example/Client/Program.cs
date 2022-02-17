@@ -10,10 +10,10 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddExceptionAllClientServices();
 
 // Addition of a standard http client
-builder.Services.AddExceptionAllClient();
+builder.Services.AddHttpClient();
 
 // Addition of a different http client, which has a special header for tracing
-builder.Services.AddExceptionAllClient("Test", x =>
+builder.Services.AddHttpClient("Test", x =>
 {
     x.DefaultRequestHeaders.Add("x-correlation-id", Guid.NewGuid().ToString());
 });

@@ -67,15 +67,4 @@ public class  ActionResultService : IActionResultService
             Value = apiResponse
         };
     }
-
-    public IActionResult GetResponse(ActionContext context, ApiErrorDetails details)
-    {
-        context.HttpContext.Response.StatusCode = details.StatusCode;
-
-        return new ObjectResult(details)
-        {
-            StatusCode = details.StatusCode,
-            Value = details
-        };
-    }
 }
