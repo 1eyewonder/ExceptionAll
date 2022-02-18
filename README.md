@@ -1,24 +1,43 @@
 # ExceptionAll
-ExceptionAll is a library for adding global error handling to Web API solutions using .NET Core. Its goals are to:
-1. Reduce code noise by reducing the need for 'try-catch' blocks in code
-2. Provide a single source of responsibility for handling and maintaining API error handling logic
-3. Allow for the customization of response data and logging actions
-4. Reduce the amount of time needed to set up Swagger documentation
+
+Package | Version | Downloads
+-----|------|-------
+<b>ExceptionAll</b> | [![Nuget version](https://img.shields.io/nuget/v/ExceptionAll)](https://www.nuget.org/packages/ExceptionAll/) | [![Nuget downloads](https://img.shields.io/nuget/dt/ExceptionAll)](https://www.nuget.org/packages/ExceptionAll/)
+<b>ExceptionAll.Abstractions</b> | [![Nuget version](https://img.shields.io/nuget/v/ExceptionAll.Abstractions)](https://www.nuget.org/packages/ExceptionAll.Abstractions/) | [![Nuget downloads](https://img.shields.io/nuget/dt/ExceptionAll.Abstractions)](https://www.nuget.org/packages/ExceptionAll.Abstractions/)
+<b>ExceptionAll.Client</b> | [![Nuget version](https://img.shields.io/nuget/v/ExceptionAll.Client)](https://www.nuget.org/packages/ExceptionAll.Client/) | [![Nuget downloads](https://img.shields.io/nuget/dt/ExceptionAll.Client)](https://www.nuget.org/packages/ExceptionAll.Client/)
 
 
 ## Table of Contents
-  - [Table of Contents](#table-of-contents)
+  - [Summary](#summary)
   - [Setup](#setup)
+    - [Server Side](#server-side)
+    - [Client Side](#client-side)
   - [Example Code](#example-code)
-  - [Out of the Box Return Objects](#out-of-the-box-return-objects)
-  - [Extending ExceptionAll](#extending-exceptionall)
+  - [Swagger Examples](#swagger-examples)
+  - [Extending ExceptionAll](#extending-exceptionall)  
 
+________
+## Summary
+ExceptionAll is a library for adding global error handling to Web API solutions using .NET Core. Its goals are to:
+1. Reduce code noise by reducing the need for 'try-catch' blocks in code
+2. Provide a single source of responsibility for configuring and maintaining API error handling logic
+3. Allow for the customization of error response data and logging actions
+4. Reduce the amount of time needed to set up Swagger documentation
+5. Simplify Http client serialization and deserialization
+
+_______
 ## Setup
-1. Create an ExceptionAll configuration class which implements the <b>IExceptionAllConfiguration</b> interface. Below are some examples various examples but are not required
+
+<i>Note: ExceptionAll offers both front and backend solutions but they do not need to be mutally exclusive. Please read over what each solution does and how it is applicable to your problem/application</i>
+
+### Server Side
+1. Install ExceptionAll & ExceptionAll.Abstractions nuget packages
+2. Create an ExceptionAll configuration class which implements the <b>IExceptionAllConfiguration</b> interface. Below are some examples various examples but are not required
    1. ErrorResponses
         - A list of the types of error responses for specific error types encountered.
    2. ContextConfiguration
-        - Allows the developer to extend the standard response object by adding details from the HttpContext. As you modify this property, your Swagger documentation should also be updated as well.
+        - Allows the developer to extend the standard response object by adding details from the HttpContext. Options become limitless since custom headers are accessible. 
+        - As the context properties are updated, the Swagger documentation should also be updated as well.
 
    ```csharp
     public class ExceptionAllConfiguration : IExceptionAllConfiguration
@@ -45,7 +64,7 @@ ExceptionAll is a library for adding global error handling to Web API solutions 
     }
    ```
 
-2. In Program.cs:
+3. In Program.cs:
 
     ```csharp
     using ExceptionAll.Helpers;
@@ -55,6 +74,17 @@ ExceptionAll is a library for adding global error handling to Web API solutions 
            .WithExceptionAllSwaggerExamples(); // optional, adds the default Swagger response examples
     ```
 
+### Client Side
+1. Install both ExceptionAll.Client & ExceptionAll.Abstractions nuget packages
+2. Add the following code within your Program.cs file in order to inject the applicable services
+
+
+    ```csharp
+    builder.Services.AddExceptionAllClientServices();
+    builder.Services.AddHttpClient();
+    ```
+    a. In client use, you will use 'IExceptionAllClientFactory' which is a wrapper around the standard .NET IHttpClientFactory interface. If clients are needed to be configured differently for different endpoints, simply add additional HttpClients with the applicable configurations.
+_______
 ## Example Code
 1. The default API response provided by ExceptionAll. This simulates an uncaught exception in your API code. This response will also be returned for specific exception types not initially considered during configuration.
    1. API Controller code
@@ -150,18 +180,26 @@ ExceptionAll is a library for adding global error handling to Web API solutions 
         }
     ```
     1. API Response
-   ![alt text](ReadMeImages\v4\ManuallyReturnedResponse.PNG)
+   
+        ![alt text](ReadMeImages\v4\ManuallyReturnedResponse.PNG)
 
-## Out of the Box Return Objects
+_______
+
+## Swagger Examples
 
 The following objects are provided out of the box to provided to handle common API errors as well as give Swagger documentation examples.
 1. BadGatewayDetails
 2. BadRequestDetails
-3. ForbiddenDetails
-4. InternalServerErrorDetails
-5. NotFoundDetails
-6. TooManyRequestDetails
-7. UnauthorizedDetails
+3. ConflictDetails
+4. ForbiddenDetails
+5. InternalServerErrorDetails
+6. NotFoundDetails
+7. NotImplementedDetails
+8. RequestTimeoutDetails
+9. ServiceUnavailableDetails
+10. TooManyRequestDetails
+11. UnauthorizedDetails
+12. UnsupportedMediaTypeDetails
 
 In order to provide the Swagger examples, add attributes with the return object as well as the HTTP status codes your endpoint handles.
 
@@ -191,6 +229,8 @@ In order to provide the Swagger examples, add attributes with the return object 
 The above code should give you the following Swagger response examples:
 
 ![alt text](ReadMeImages\v4\SwaggerExamples.PNG)
+
+_______
 
 ## Extending ExceptionAll
 ExceptionAll provides some standard detail objects out of the box, one of which is shown below. If you, as a developer, need to extend the library
