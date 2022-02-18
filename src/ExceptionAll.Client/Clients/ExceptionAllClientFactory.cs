@@ -3,33 +3,24 @@
 public class ExceptionAllClientFactory : IExceptionAllClientFactory
 {
     private readonly IHttpClientFactory _clientFactory;
-    private readonly ISerializerService _serializer;
     private readonly IValidationService _validation;
 
     public ExceptionAllClientFactory(
         IHttpClientFactory clientFactory,
-        ISerializerService serializer,
         IValidationService validation)
     {
         _clientFactory = clientFactory;
-        _serializer    = serializer;
         _validation    = validation;
     }
 
-    public ExceptionAllClient CreateClient()
+    public ExceptionAllClient CreateClient(string? clientName = null)
     {
-        return new ExceptionAllClient(
-            _clientFactory.CreateClient(),
-            _serializer,
-            _validation,
-            new JsonSerializerOptions(JsonSerializerDefaults.Web));
-    }
+        var client = clientName == null 
+            ? _clientFactory.CreateClient() 
+            : _clientFactory.CreateClient(clientName);
 
-    public ExceptionAllClient CreateClient(string clientName)
-    {
         return new ExceptionAllClient(
-            _clientFactory.CreateClient(clientName),
-            _serializer,
+            client,
             _validation,
             new JsonSerializerOptions(JsonSerializerDefaults.Web));
     }

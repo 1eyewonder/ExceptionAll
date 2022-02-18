@@ -2,6 +2,5 @@
 
 public interface IExceptionAllClientFactory
 {
-    public ExceptionAllClient CreateClient();
-    public ExceptionAllClient CreateClient(string clientName);
+    public ExceptionAllClient CreateClient(string? clientName = null);
 }

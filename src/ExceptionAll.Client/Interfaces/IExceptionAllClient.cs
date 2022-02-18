@@ -12,7 +12,7 @@ public interface IExceptionAllClient
     /// <param name="relativeUrl"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    ValueTask<T?> GetContentAsync<T>(string relativeUrl, CancellationToken token = new());
+    ValueTask<T?> GetContentAsync<T>(string relativeUrl, CancellationToken token = default);
 
     /// <summary>
     /// Executes Http Delete and returns the requested object type
@@ -21,7 +21,7 @@ public interface IExceptionAllClient
     /// <param name="relativeUrl"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    ValueTask<T?> DeleteContentAsync<T>(string relativeUrl, CancellationToken token = new());
+    ValueTask<T?> DeleteContentAsync<T>(string relativeUrl, CancellationToken token = default);
 
     /// <summary>
     /// Executes Http Post and returns the requested object type
@@ -29,10 +29,9 @@ public interface IExceptionAllClient
     /// <typeparam name="T"></typeparam>
     /// <param name="relativeUrl"></param>
     /// <param name="content"></param>
-    /// <param name="mediaType"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    ValueTask<T?> PostContentAsync<T>(string relativeUrl, T content, string mediaType = "application/json", CancellationToken token = new());
+    ValueTask<T?> PostContentAsync<T>(string relativeUrl, T content, CancellationToken token = new());
 
     /// <summary>
     /// Executes Http Put and returns the requested object type
@@ -40,8 +39,7 @@ public interface IExceptionAllClient
     /// <typeparam name="T"></typeparam>
     /// <param name="relativeUrl"></param>
     /// <param name="content"></param>
-    /// <param name="mediaType"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    ValueTask<T?> PutContentAsync<T>(string relativeUrl, T content, string mediaType = "application/json", CancellationToken token = new());
+    ValueTask<T?> PutContentAsync<T>(string relativeUrl, T content, CancellationToken token = new());
 }
