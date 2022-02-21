@@ -6,21 +6,35 @@ on:
       - main
 
 jobs:
-  deploy:
+  publish:
     name: 'build, pack & publish'
     runs-on: ubuntu-latest
     steps:
     - name: 'Checkout'
       uses: actions/checkout@v2
 
-    - name: Setup dotnet
+    - name: 'Install dotnet'
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
 
-    - name: 'Publish package'
-      id: publish_nuget
+    - name: 'Publish Abstractions'
+      id : publish_abstractions_nuget
       uses: rohith/publish-nuget@v2
       with:
-        PROJECT_FILE_PATH: ExceptionAll/ExceptionAll.csproj
+        PROJECT_FILE_PATH: src/ExceptionAll.Abstractions/ExceptionAll.Abstractions.csproj
+        NUGET_KEY: ${{ secrets.NUGET_AUTH_TOKEN }}
+        
+    - name: 'Publish ExceptionAll'
+      id: publish_exceptionall_nuget
+      uses: rohith/publish-nuget@v2
+      with:
+        PROJECT_FILE_PATH: src/ExceptionAll/ExceptionAll.csproj
+        NUGET_KEY: ${{ secrets.NUGET_AUTH_TOKEN }}
+
+    - name: 'Publish Client'
+      id: publish_client_nuget
+      uses: rohith/publish-nuget@v2
+      with:
+        PROJECT_FILE_PATH: src/ExceptionAll.Client/ExceptionAll.Client.csproj
         NUGET_KEY: ${{ secrets.NUGET_AUTH_TOKEN }}
