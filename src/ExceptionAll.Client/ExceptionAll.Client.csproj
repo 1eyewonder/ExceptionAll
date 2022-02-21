@@ -7,13 +7,14 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<RepositoryUrl>https://github.com/1eyewonder/ExceptionAll</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
-		<PackageTags>Global Exception Handling</PackageTags>
-		<Description>ExceptionAll client package for better API error handling and serialization</Description>
+		<PackageTags>global-exception-handling api clean-code netcore csharp</PackageTags>
+		<Description>ExceptionAll client package for cleaner API error handling and serialization</Description>
 		<Copyright>2022</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Authors>Bronson Bata</Authors>
 		<Version>1.0.0</Version>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
+		<PackageVersion>6.0.0</PackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

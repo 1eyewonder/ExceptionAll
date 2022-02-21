@@ -48,7 +48,7 @@ public class ExceptionAllClient : IExceptionAllClient
     /// <exception cref="TaskCanceledException"/>
     /// <exception cref="InvalidOperationException"/>
     public async ValueTask<T?> PostContentAsync<T>(
-        string relativeUrl, T content, CancellationToken token = new())
+        string relativeUrl, T content, CancellationToken token = default)
     {
         var response = await _httpClient.PostAsJsonAsync(relativeUrl, content, _options, token);
         await _validation.ValidateAsync(response);
@@ -60,7 +60,7 @@ public class ExceptionAllClient : IExceptionAllClient
     /// <exception cref="TaskCanceledException"/>
     /// <exception cref="InvalidOperationException"/>
     public async ValueTask<T?> PutContentAsync<T>(
-        string relativeUrl, T content, CancellationToken token = new())
+        string relativeUrl, T content, CancellationToken token = default)
     {
         var response = await _httpClient.PutAsJsonAsync(relativeUrl, content, _options, token);
         await _validation.ValidateAsync(response);

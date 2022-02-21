@@ -6,8 +6,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/1eyewonder/ExceptionAll</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageTags>Global Exception Handling</PackageTags>
-    <Description>Library for adding global error handling to .NET Core Web API solutions.</Description>
+    <PackageTags>global-exception-handling api clean-code netcore csharp swagger</PackageTags>
+    <Description>Adds configurable global error handling to .NET Core Web API solutions</Description>
     <Copyright>2022</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <Authors>Bronson Bata</Authors>
@@ -17,6 +17,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <DocumentationFile>/ExceptionAll-swagger.xml</DocumentationFile>
+    <PackageVersion>6.0.0</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

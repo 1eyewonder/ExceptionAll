@@ -31,7 +31,7 @@ public interface IExceptionAllClient
     /// <param name="content"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    ValueTask<T?> PostContentAsync<T>(string relativeUrl, T content, CancellationToken token = new());
+    ValueTask<T?> PostContentAsync<T>(string relativeUrl, T content, CancellationToken token = default);
 
     /// <summary>
     /// Executes Http Put and returns the requested object type
@@ -41,5 +41,5 @@ public interface IExceptionAllClient
     /// <param name="content"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    ValueTask<T?> PutContentAsync<T>(string relativeUrl, T content, CancellationToken token = new());
+    ValueTask<T?> PutContentAsync<T>(string relativeUrl, T content, CancellationToken token = default);
 }

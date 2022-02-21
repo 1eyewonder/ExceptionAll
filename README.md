@@ -1,10 +1,10 @@
 # ExceptionAll
 
-Package | Version | Downloads
------|------|-------
-<b>ExceptionAll</b> | [![Nuget version](https://img.shields.io/nuget/v/ExceptionAll)](https://www.nuget.org/packages/ExceptionAll/) | [![Nuget downloads](https://img.shields.io/nuget/dt/ExceptionAll)](https://www.nuget.org/packages/ExceptionAll/)
-<b>ExceptionAll.Abstractions</b> | [![Nuget version](https://img.shields.io/nuget/v/ExceptionAll.Abstractions)](https://www.nuget.org/packages/ExceptionAll.Abstractions/) | [![Nuget downloads](https://img.shields.io/nuget/dt/ExceptionAll.Abstractions)](https://www.nuget.org/packages/ExceptionAll.Abstractions/)
-<b>ExceptionAll.Client</b> | [![Nuget version](https://img.shields.io/nuget/v/ExceptionAll.Client)](https://www.nuget.org/packages/ExceptionAll.Client/) | [![Nuget downloads](https://img.shields.io/nuget/dt/ExceptionAll.Client)](https://www.nuget.org/packages/ExceptionAll.Client/)
+| Package                          | Version                                                                                                                                   | Downloads                                                                                                                                  |
+|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| <b>ExceptionAll</b>              | [![Nuget version](https://img.shields.io/nuget/v/ExceptionAll)](https://www.nuget.org/packages/ExceptionAll/)                             | [![Nuget downloads](https://img.shields.io/nuget/dt/ExceptionAll)](https://www.nuget.org/packages/ExceptionAll/)                           |
+| <b>ExceptionAll.Abstractions</b> | [![Nuget version](https://img.shields.io/nuget/v/ExceptionAll.Abstractions)](https://www.nuget.org/packages/ExceptionAll.Abstractions/)   | [![Nuget downloads](https://img.shields.io/nuget/dt/ExceptionAll.Abstractions)](https://www.nuget.org/packages/ExceptionAll.Abstractions/) |
+| <b>ExceptionAll.Client</b>       | [![Nuget version](https://img.shields.io/nuget/v/ExceptionAll.Client)](https://www.nuget.org/packages/ExceptionAll.Client/)               | [![Nuget downloads](https://img.shields.io/nuget/dt/ExceptionAll.Client)](https://www.nuget.org/packages/ExceptionAll.Client/)             |
 
 
 ## Table of Contents
@@ -13,12 +13,15 @@ Package | Version | Downloads
     - [Server Side](#server-side)
     - [Client Side](#client-side)
   - [Example Code](#example-code)
+    - [Server](#server)
+    - [Client](#client)
   - [Swagger Examples](#swagger-examples)
   - [Extending ExceptionAll](#extending-exceptionall)  
 
+
 ________
 ## Summary
-ExceptionAll is a library for adding global error handling to Web API solutions using .NET Core. Its goals are to:
+ExceptionAll is a library for adding global error handling to Web API solutions as well as streamline http client interactions. Its goals are to:
 1. Reduce code noise by reducing the need for 'try-catch' blocks in code
 2. Provide a single source of responsibility for configuring and maintaining API error handling logic
 3. Allow for the customization of error response data and logging actions
@@ -28,7 +31,7 @@ ExceptionAll is a library for adding global error handling to Web API solutions 
 _______
 ## Setup
 
-<i>Note: ExceptionAll offers both front and backend solutions but they do not need to be mutally exclusive. Please read over what each solution does and how it is applicable to your problem/application</i>
+<i>Note: ExceptionAll offers both front and backend solutions but they do not need to be mutually exclusive. Please read over what each solution does and how it is applicable to your problem/application</i>
 
 ### Server Side
 1. Install ExceptionAll & ExceptionAll.Abstractions nuget packages
@@ -38,6 +41,7 @@ _______
    2. ContextConfiguration
         - Allows the developer to extend the standard response object by adding details from the HttpContext. Options become limitless since custom headers are accessible. 
         - As the context properties are updated, the Swagger documentation should also be updated as well.
+        - The 'Errors' key is reserved by ExceptionAll
 
    ```csharp
     public class ExceptionAllConfiguration : IExceptionAllConfiguration
@@ -78,14 +82,17 @@ _______
 1. Install both ExceptionAll.Client & ExceptionAll.Abstractions nuget packages
 2. Add the following code within your Program.cs file in order to inject the applicable services
 
-
-    ```csharp
+   ```csharp
+    using ExceptionAll.Client.Helpers;
+   
     builder.Services.AddExceptionAllClientServices();
     builder.Services.AddHttpClient();
     ```
     a. In client use, you will use 'IExceptionAllClientFactory' which is a wrapper around the standard .NET IHttpClientFactory interface. If clients are needed to be configured differently for different endpoints, simply add additional HttpClients with the applicable configurations.
 _______
 ## Example Code
+
+### Server
 1. The default API response provided by ExceptionAll. This simulates an uncaught exception in your API code. This response will also be returned for specific exception types not initially considered during configuration.
    1. API Controller code
    
@@ -107,7 +114,7 @@ _______
         ```
    2. API Response
     
-        ![alt text](ReadMeImages\v4\ApiControllerStandardResponse.PNG)
+        ![alt text](ReadMeImages/v4/ApiControllerStandardResponse.PNG)
 
 2. This example shows catching an exception configured in the configuration class. (See above configuration code)
    1. API Controller code
@@ -124,7 +131,7 @@ _______
         ```
     1. API Response. The properties match what we see in our configuration, seen further up on the page.
 
-        ![alt text](ReadMeImages\v4\ArgumentNullRefResponse.PNG)
+        ![alt text](ReadMeImages/v4/ArgumentNullRefResponse.PNG)
 
 3. There may be times where an ExceptionAll response is undesired. To get a non-ExceptionAll response, just wrap the controller/endpoint code with a standard 'try-catch' block and return the new, desired object.
    1. API Controller code
@@ -147,7 +154,7 @@ _______
    ```
    1. API Response
    
-        ![alt text](ReadMeImages\v4\NonExceptionAllResponse.PNG)
+        ![alt text](ReadMeImages/v4/NonExceptionAllResponse.PNG)
 
 4. This example covers manual response generation, for times developers want to return caught exceptions with a special message and/or a surface list of errors to the user
    1. API Controller code
@@ -181,8 +188,22 @@ _______
     ```
     1. API Response
    
-        ![alt text](ReadMeImages\v4\ManuallyReturnedResponse.PNG)
+        ![alt text](ReadMeImages/v4/ManuallyReturnedResponse.PNG)
 
+### Client
+1. Make sure to inject the ExceptionAllClient factory wherever you are trying to make HttpClient calls
+   ```csharp
+   @inject IExceptionAllClientFactory _exceptionAllClientFactory
+   ```
+2. Create a HttpClient like you normally would. Two examples below
+   ```csharp
+   // Standard client creation
+   IExceptionAllClient ExceptionAllClient = _exceptionAllClientFactory.CreateClient();
+   
+   // Creating named HttpClient configured in IOC
+   IExceptionAllClient ClientWithHeader = _exceptionAllClientFactory.CreateClient("Test");
+   ```
+3. Execute one of the interface methods in order to call a http CRUD operation
 _______
 
 ## Swagger Examples
@@ -228,7 +249,7 @@ In order to provide the Swagger examples, add attributes with the return object 
 
 The above code should give you the following Swagger response examples:
 
-![alt text](ReadMeImages\v4\SwaggerExamples.PNG)
+![alt text](ReadMeImages/v4/SwaggerExamples.PNG)
 
 _______
 
@@ -238,13 +259,9 @@ and create additional detail types, follow the below example as a template and i
 
 ```csharp
 
-public class BadGatewayDetails : IExceptionAllDetails
+public class BadGatewayDetails : BaseDetails
 {
-    public string Title => GetDetails().Title;
-    public int StatusCode => GetDetails().StatusCode;
-    public string Message { get; init; } = string.Empty;
-    public IReadOnlyDictionary<string, object>? ContextDetails { get; init; }
-    public (int StatusCode, string Title) GetDetails()
+    public override (int StatusCode, string Title) GetDetails()
     {
         return (502, "Bad Gateway");
     }
