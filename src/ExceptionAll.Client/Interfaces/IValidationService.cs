@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Client.Interfaces;
+﻿namespace ExceptionAll.Client;
 
 public interface IValidationService
 {

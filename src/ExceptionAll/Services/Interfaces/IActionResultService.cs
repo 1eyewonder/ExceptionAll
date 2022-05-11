@@ -1,14 +1,15 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Interfaces;
+﻿namespace ExceptionAll;
 
 /// <summary>
-/// Service for creating and returning standard IActionResult error objects
+/// Service for creating and returning IActionResult error objects
 /// </summary>
+/// <remarks>
+/// Used when operating with .NET Core MVC
+/// </remarks>
 public interface IActionResultService
 {
     /// <summary>
-    /// Create an error response for a filter-caught exceptions
+    /// Create an error response for a filter-caught exception
     /// </summary>
     /// <param name="context">Exception context</param>
     /// <returns></returns>

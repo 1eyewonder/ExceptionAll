@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Interfaces;
+﻿namespace ExceptionAll;
 
 /// <summary>
 /// Constructed response for a given exception type
@@ -11,7 +9,7 @@ public interface IErrorResponse
     string ErrorTitle { get; }
     string Message { get; }
     Type ExceptionType { get; }
-    Action<ILogger<IActionResultService>, Exception>? LogAction { get; }
+    Action<ILogger, Exception>? LogAction { get; }
 }
 
 public interface IResponseTitle : IErrorResponse
@@ -51,5 +49,5 @@ public interface ILogAction : IErrorResponse
     /// </summary>
     /// <param name="action"></param>
     /// <returns></returns>
-    public ErrorResponse WithLogAction(Action<ILogger<IActionResultService>, Exception> action);
+    public ErrorResponse WithLogAction(Action<ILogger, Exception> action);
 }

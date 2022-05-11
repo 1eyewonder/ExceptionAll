@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Models;
-
-namespace ExceptionAll.Interfaces;
+﻿namespace ExceptionAll;
 
 public interface IContextConfigurationService
 {
@@ -9,4 +7,10 @@ public interface IContextConfigurationService
     /// </summary>
     /// <returns></returns>
     IReadOnlyDictionary<string, object>? GetContextDetails(HttpContext context, List<ErrorDetail>? errors = null);
+
+    /// <summary>
+    /// Returns the current configuration in use
+    /// </summary>
+    /// <returns></returns>
+    IExceptionAllConfiguration GetConfiguration();
 }

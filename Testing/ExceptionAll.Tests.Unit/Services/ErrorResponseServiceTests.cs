@@ -9,16 +9,20 @@ public class ErrorResponseServiceTests
         _testOutputHelper = testOutputHelper;
     }
 
-    [Theory, MemberData(nameof(GetValidErrorResponses))]
+    [Theory]
+    [MemberData(nameof(GetValidErrorResponses))]
     public void AddErrorResponse_ShouldSuccessfullyAdd_WhenResponseDoesNotExistInContainerYet(ErrorResponse response)
     {
         // Arrange
-        var errorResponseLogger = Substitute.For<ILogger<IErrorResponseService>>();
-        var configuration       = Substitute.For<IExceptionAllConfiguration>();
-        configuration.ErrorResponses.Returns(new List<IErrorResponse>() { response });
+        var errorResponseLogger = Substitute.For<ILogger<ErrorResponseService>>();
+        var configuration = Substitute.For<IExceptionAllConfiguration>();
+        configuration.ErrorResponses.Returns(new List<IErrorResponse> { response });
+
+        var configurationService = Substitute.For<IContextConfigurationService>();
+        configurationService.GetConfiguration().Returns(configuration);
 
         // Act
-        var exception = Record.Exception(() => new ErrorResponseService(errorResponseLogger, configuration));
+        var exception = Record.Exception(() => new ErrorResponseService(errorResponseLogger, configurationService));
 
         // Assess
         _testOutputHelper.WriteLine($"Error Response: {response.ToJson()}");
@@ -28,16 +32,20 @@ public class ErrorResponseServiceTests
         Assert.Null(exception);
     }
 
-    [Theory, MemberData(nameof(GetValidErrorResponses))]
+    [Theory]
+    [MemberData(nameof(GetValidErrorResponses))]
     public void AddErrorResponse_WithDuplicateResponses_ShouldThrow(ErrorResponse response)
     {
         // Arrange
-        var errorResponseLogger = Substitute.For<ILogger<IErrorResponseService>>();
-        var configuration       = Substitute.For<IExceptionAllConfiguration>();
-        configuration.ErrorResponses.Returns(new List<IErrorResponse>() { response, response });
+        var errorResponseLogger = Substitute.For<ILogger<ErrorResponseService>>();
+        var configuration = Substitute.For<IExceptionAllConfiguration>();
+        configuration.ErrorResponses.Returns(new List<IErrorResponse> { response, response });
+
+        var configurationService = Substitute.For<IContextConfigurationService>();
+        configurationService.GetConfiguration().Returns(configuration);
 
         // Act
-        var exception = Record.Exception(() => new ErrorResponseService(errorResponseLogger, configuration));
+        var exception = Record.Exception(() => new ErrorResponseService(errorResponseLogger, configurationService));
 
         // Assess
         _testOutputHelper.WriteLine($"Error Response: {response.ToJson()}");
@@ -89,7 +97,7 @@ public class ErrorResponseServiceTests
             new object[]
             {
                 ErrorResponse.CreateErrorResponse()
-            },
+            }
         };
     }
 }

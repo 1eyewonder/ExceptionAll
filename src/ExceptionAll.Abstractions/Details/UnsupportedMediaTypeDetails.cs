@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Abstractions.Details;
+﻿namespace ExceptionAll.Abstractions;
 
 public class UnsupportedMediaTypeDetails : BaseDetails
 {

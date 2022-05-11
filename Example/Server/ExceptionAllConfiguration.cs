@@ -1,5 +1,5 @@
-﻿using ExceptionAll.Interfaces;
-using ExceptionAll.Models;
+﻿using ExceptionAll;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Example.Server;
 
@@ -18,14 +18,26 @@ public class ExceptionAllConfiguration : IExceptionAllConfiguration
 
     public Dictionary<string, Func<HttpContext, object>>? ContextConfiguration => new()
     {
-        { "Path", x => x?.Request.Path.Value ?? string.Empty },
+        { "Path", x => x.Request.Path.Value ?? string.Empty },
         { "Query", x => x.Request.QueryString.Value ?? string.Empty },
-        { "TraceIdentifier", x => x?.TraceIdentifier ?? string.Empty },
-        { "LocalIpAddress", x => x?.Connection.LocalIpAddress?.ToString() ?? string.Empty },
+        { "TraceIdentifier", x => x.TraceIdentifier },
+        { "LocalIpAddress", x => x.Connection.LocalIpAddress?.ToString() ?? string.Empty },
         {
             "CorrelationId",
             x => x.Request.Headers["x-correlation-id"]
                   .ToString()
+        }
+    };
+
+    /// <inheritdoc cref="IExceptionAllConfiguration.ValidationLoggingAction"/>
+    public Action<ILogger, ActionContext>? ValidationLoggingAction => (logger, context) =>
+    {
+        foreach (var (key, value) in context.ModelState)
+        {
+            foreach (var error in value.Errors)
+            {
+                logger.LogWarning(error.Exception, "Error with {Key}: {Message}", key, error.ErrorMessage);
+            }
         }
     };
 }

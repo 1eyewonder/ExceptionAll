@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using ExceptionAll.Abstractions.Models;
-
-namespace ExceptionAll.Tests.Unit.Services;
+﻿namespace ExceptionAll.Tests.Unit.Services;
 
 public class ContextConfigurationServiceTests
 {
@@ -98,5 +95,39 @@ public class ContextConfigurationServiceTests
         //Assert
         Assert.IsType<Dictionary<string, object>>(dictionary);
         Assert.True(hasErrorsKey);
+    }
+
+    [Fact]
+    public void GetConfiguration_ReturnsUtilizedConfiguration()
+    {
+        // Arrange
+        var dictionary = new Dictionary<string, Func<HttpContext, object>> { { "Test", x => x.TraceIdentifier } };
+        var errorResponses = new List<IErrorResponse>
+        {
+            ErrorResponse
+                .CreateErrorResponse()
+                .WithTitle("Argument Null Exception")
+                .WithStatusCode(500)
+                .WithMessage("The developer goofed")
+                .ForException<ArgumentNullException>()
+                .WithLogAction((x, e) => x.LogDebug(e, "Oops I did it again"))
+        };
+        
+        var configuration = Substitute.For<IExceptionAllConfiguration>();
+        configuration.ContextConfiguration.Returns(dictionary);
+        configuration.ErrorResponses.Returns(errorResponses);
+
+        var sut = new ContextConfigurationService(configuration);
+        
+        // Act
+        var returnedConfiguration = sut.GetConfiguration();
+
+        // Assess
+        _testOutputHelper.WriteLine($"Expected configuration: {configuration}");
+        _testOutputHelper.WriteLine($"Actual configuration: {returnedConfiguration}");
+
+        // Assert
+        Assert.Equal(dictionary, returnedConfiguration.ContextConfiguration);
+        Assert.Equal(errorResponses, returnedConfiguration.ErrorResponses);
     }
 }

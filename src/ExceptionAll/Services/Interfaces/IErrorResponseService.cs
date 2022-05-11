@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Interfaces;
+﻿namespace ExceptionAll;
 
 /// <summary>
 /// Service for managing global error responses

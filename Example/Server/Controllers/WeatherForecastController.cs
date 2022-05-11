@@ -1,14 +1,14 @@
 using System.Net;
 using Example.Shared;
-using ExceptionAll.Abstractions.Details;
-using ExceptionAll.Abstractions.Models;
-using ExceptionAll.Interfaces;
+using ExceptionAll;
+using ExceptionAll.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Example.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[ServiceFilter(typeof(ExceptionFilter))]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
@@ -106,5 +106,15 @@ public class WeatherForecastController : ControllerBase
             ControllerContext,
             $"No item exists with name of {test}",
             errors);
+    }
+    
+    [HttpPost]
+    [Route("api/AddForecast")]
+    [ProducesResponseType(typeof(BadRequestDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(InternalServerErrorDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AddForecast([FromBody] WeatherForecast forecast)
+    {
+        await Task.Delay(0);
+        return Created(string.Empty, forecast);
     }
 }
