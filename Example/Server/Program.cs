@@ -1,25 +1,25 @@
-using System.Text.Json;
 using Example.Server;
-using ExceptionAll.Helpers;
-using Microsoft.AspNetCore.ResponseCompression;
+using Example.Shared;
+using ExceptionAll;
+using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.Configure<JsonSerializerOptions>(builder.Configuration.GetSection("Test"));
-
 builder.Services.AddExceptionAll<ExceptionAllConfiguration>()
+       .WithValidationOverride()
        .WithExceptionAllSwaggerExamples();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+       .AddFluentValidation(
+           x => { x.DisableDataAnnotationsValidation = true; }
+       );
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<WeatherForecastValidator>());
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(
@@ -29,11 +29,9 @@ builder.Services.AddSwaggerGen(
         c.EnableAnnotations();
         c.ExampleFilters();
 
-        if (File.Exists("/ExceptionAll-swagger.xml"))
-        {
-            c.IncludeXmlComments("/ExceptionAll-swagger.xml");
-        }
-    });
+        if (File.Exists("/ExceptionAll-swagger.xml")) c.IncludeXmlComments("/ExceptionAll-swagger.xml");
+    }
+);
 
 var app = builder.Build();
 
@@ -45,13 +43,11 @@ app.UseSwaggerUI(
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "ExceptionAll.APIExample v1");
         c.DisplayRequestDuration();
         c.EnableTryItOutByDefault();
-    });
+    }
+);
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseWebAssemblyDebugging();
-}
+if (app.Environment.IsDevelopment()) { app.UseWebAssemblyDebugging(); }
 else
 {
     app.UseExceptionHandler("/Error");

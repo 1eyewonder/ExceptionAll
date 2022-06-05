@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Json;
-
-namespace ExceptionAll.Client.Clients;
+﻿namespace ExceptionAll.Client;
 
 /// <summary>
 /// <inheritdoc cref="IExceptionAllClient"/>

@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Models;
+﻿namespace ExceptionAll;
 
 public class ErrorResponse : IResponseTitle,
     IMessageCreation,
@@ -10,7 +10,7 @@ public class ErrorResponse : IResponseTitle,
     public string ErrorTitle { get; private set; } = "Error";
     public string Message { get; private set; } = "There was an error encountered. If no errors are explicitly shown, please see logs for more details.";
     public Type ExceptionType { get; private set; } = typeof(Exception);
-    public Action<ILogger<IActionResultService>, Exception>? LogAction { get; private set; }
+    public Action<ILogger, Exception>? LogAction { get; private set; }
 
     private ErrorResponse()
     {
@@ -45,7 +45,7 @@ public class ErrorResponse : IResponseTitle,
         return this;
     }
 
-    ErrorResponse ILogAction.WithLogAction(Action<ILogger<IActionResultService>, Exception> action)
+    ErrorResponse ILogAction.WithLogAction(Action<ILogger, Exception> action)
     {
         LogAction = action;
         return this;

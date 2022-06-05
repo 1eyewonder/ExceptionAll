@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Abstractions.Interfaces;
+﻿namespace ExceptionAll.Abstractions;
 
 public interface IExceptionAllDetails : IApiErrorDetails, IDetailBuilder
 {

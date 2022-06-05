@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Client.Interfaces;
+﻿namespace ExceptionAll.Client;
 
 /// <summary>
 /// HttpClient wrapper service for cleaner top level code

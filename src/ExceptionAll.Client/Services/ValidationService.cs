@@ -1,18 +1,23 @@
-﻿namespace ExceptionAll.Client.Services;
+﻿namespace ExceptionAll.Client;
 
 public class ValidationService : IValidationService
 {
-    private readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web);
+    private readonly JsonSerializerOptions _options;
 
-    /// <exception cref="ExceptionAllException"/>
+    public ValidationService(JsonSerializerOptions? options = null)
+    {
+        _options = options ?? new JsonSerializerOptions(JsonSerializerDefaults.Web);
+    }
+
+    /// <exception cref="ExceptionAllException" />
     public async ValueTask ValidateAsync(
         HttpResponseMessage message)
     {
-        var content = await message.Content.ReadAsStringAsync();
-
         try
         {
+            var content = await message.Content.ReadAsStringAsync();
             var details = JsonSerializer.Deserialize<ApiErrorDetails>(content, _options);
+
             if (details != null) throw new ExceptionAllException(message, details);
         }
         catch (Exception e) when (e.GetType() != typeof(ExceptionAllException))

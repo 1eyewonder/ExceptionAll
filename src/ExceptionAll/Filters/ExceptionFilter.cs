@@ -1,7 +1,7 @@
-﻿namespace ExceptionAll.Filters;
+﻿namespace ExceptionAll;
 
 /// <summary>
-/// Catches exceptions and creates standard responses using the IActionResultService
+/// Catches exceptions and creates standard responses
 /// </summary>
 public class ExceptionFilter : ExceptionFilterAttribute
 {

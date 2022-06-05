@@ -1,6 +1,4 @@
-﻿using ExceptionAll.Filters;
-
-namespace ExceptionAll.Tests.Unit.Filters;
+﻿namespace ExceptionAll.Tests.Unit.Filters;
 
 public class ExceptionFilterTests
 {

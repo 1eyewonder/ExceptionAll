@@ -1,6 +1,5 @@
-﻿global using ExceptionAll.Interfaces;
-global using ExceptionAll.Models;
-global using ExceptionAll.Services;
+﻿global using ExceptionAll;
+global using ExceptionAll.Abstractions;
 global using ExceptionAll.Tests.Unit.Helpers;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
@@ -16,5 +15,4 @@ global using System.Collections.Generic;
 global using System.ComponentModel.DataAnnotations;
 global using Xunit;
 global using Xunit.Abstractions;
-global using ExceptionAll.Abstractions.Details;
 global using NSubstitute.ReturnsExtensions;

@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Client.Helpers;
+﻿namespace ExceptionAll.Client;
 
 public static class ServiceCollectionHelper
 {

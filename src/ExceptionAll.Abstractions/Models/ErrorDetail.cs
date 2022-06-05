@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Abstractions.Models;
+﻿namespace ExceptionAll.Abstractions;
 
 /// <summary>
 /// Simple record for communicating errors
