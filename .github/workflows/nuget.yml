@@ -20,7 +20,7 @@ jobs:
 
     - name: 'Publish Abstractions'
       id : publish_abstractions_nuget
-      uses: alirezanet/publish-nuget@v3.0.x
+      uses: alirezanet/publish-nuget@v3.0.4
       with:
         PROJECT_FILE_PATH: src/ExceptionAll.Abstractions/ExceptionAll.Abstractions.csproj
         NUGET_KEY: ${{ secrets.NUGET_AUTH_TOKEN }}
@@ -28,7 +28,7 @@ jobs:
         
     - name: 'Publish ExceptionAll'
       id: publish_exceptionall_nuget
-      uses: alirezanet/publish-nuget@v3.0.x
+      uses: alirezanet/publish-nuget@v3.0.4
       with:
         PROJECT_FILE_PATH: src/ExceptionAll/ExceptionAll.csproj
         NUGET_KEY: ${{ secrets.NUGET_AUTH_TOKEN }}
@@ -36,7 +36,7 @@ jobs:
 
     - name: 'Publish Client'
       id: publish_client_nuget
-      uses: alirezanet/publish-nuget@v3.0.x
+      uses: alirezanet/publish-nuget@v3.0.4
       with:
         PROJECT_FILE_PATH: src/ExceptionAll.Client/ExceptionAll.Client.csproj
         NUGET_KEY: ${{ secrets.NUGET_AUTH_TOKEN }}
