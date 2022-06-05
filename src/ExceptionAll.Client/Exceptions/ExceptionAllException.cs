@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Client.Exceptions;
+﻿namespace ExceptionAll.Client;
 
 public class ExceptionAllException : Exception
 {

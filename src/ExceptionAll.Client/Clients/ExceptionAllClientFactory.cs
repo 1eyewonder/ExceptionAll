@@ -1,27 +1,31 @@
-﻿namespace ExceptionAll.Client.Clients;
+﻿namespace ExceptionAll.Client;
 
 public class ExceptionAllClientFactory : IExceptionAllClientFactory
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly IValidationService _validation;
+    private readonly JsonSerializerOptions _serializerOptions;
 
     public ExceptionAllClientFactory(
         IHttpClientFactory clientFactory,
-        IValidationService validation)
+        IValidationService validation,
+        JsonSerializerOptions? serializerOptions = null)
     {
-        _clientFactory = clientFactory;
-        _validation    = validation;
+        _clientFactory     = clientFactory;
+        _validation        = validation;
+        _serializerOptions = serializerOptions ?? new JsonSerializerOptions(JsonSerializerDefaults.Web);
     }
 
     public ExceptionAllClient CreateClient(string? clientName = null)
     {
-        var client = clientName == null 
-            ? _clientFactory.CreateClient() 
+        var client = clientName == null
+            ? _clientFactory.CreateClient()
             : _clientFactory.CreateClient(clientName);
 
         return new ExceptionAllClient(
             client,
             _validation,
-            new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            _serializerOptions
+        );
     }
 }

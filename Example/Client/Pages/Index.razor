@@ -1,8 +1,7 @@
 ﻿@page "/"
-@using ExceptionAll.Abstractions.Models
 @using Example.Shared
-@using ExceptionAll.Client.Exceptions
-@using ExceptionAll.Client.Interfaces
+@using ExceptionAll.Abstractions
+@using ExceptionAll.Client
 @inject IExceptionAllClientFactory _exceptionAllClientFactory
 
 <PageTitle>Index</PageTitle>
@@ -11,6 +10,7 @@
 <button @onclick="@Endpoint2">Endpoint 2</button>
 <button @onclick="@Endpoint3">Endpoint 3</button>
 <button @onclick="@Endpoint4">Endpoint 4</button>
+<button @onclick="@Endpoint5">Endpoint 5</button>
 
 <br/>
 
@@ -99,6 +99,20 @@
         try
         {
             _forecasts = await _clientWithHeader.GetContentAsync<WeatherForecast[]>("https://localhost:44304/WeatherForecast/api/success");
+            _errorDetails = null;
+        }
+        catch (ExceptionAllException e)
+        {
+            _errorDetails = e.ErrorDetails;
+            _forecasts = null;
+        }
+    }
+    
+    private async Task Endpoint5()
+    {
+        try
+        {
+            var response = await _clientWithHeader.PostContentAsync("https://localhost:44304/WeatherForecast/api/AddForecast", new WeatherForecast() { Summary = null });
             _errorDetails = null;
         }
         catch (ExceptionAllException e)

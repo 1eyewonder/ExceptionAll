@@ -1,4 +1,4 @@
-﻿namespace ExceptionAll.Abstractions.Models;
+﻿namespace ExceptionAll.Abstractions;
 
 public class ApiErrorDetails : IApiErrorDetails
 {

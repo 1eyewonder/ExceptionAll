@@ -1,5 +1,5 @@
 using Example.Client;
-using ExceptionAll.Client.Helpers;
+using ExceptionAll.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

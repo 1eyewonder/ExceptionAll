@@ -24,6 +24,7 @@ jobs:
       with:
         PROJECT_FILE_PATH: src/ExceptionAll.Abstractions/ExceptionAll.Abstractions.csproj
         NUGET_KEY: ${{ secrets.NUGET_AUTH_TOKEN }}
+        INCLUDE_SYMBOLS: true
         
     - name: 'Publish ExceptionAll'
       id: publish_exceptionall_nuget
@@ -31,6 +32,7 @@ jobs:
       with:
         PROJECT_FILE_PATH: src/ExceptionAll/ExceptionAll.csproj
         NUGET_KEY: ${{ secrets.NUGET_AUTH_TOKEN }}
+        INCLUDE_SYMBOLS: true
 
     - name: 'Publish Client'
       id: publish_client_nuget
@@ -38,3 +40,4 @@ jobs:
       with:
         PROJECT_FILE_PATH: src/ExceptionAll.Client/ExceptionAll.Client.csproj
         NUGET_KEY: ${{ secrets.NUGET_AUTH_TOKEN }}
+        INCLUDE_SYMBOLS: true
